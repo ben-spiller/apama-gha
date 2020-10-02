@@ -32,7 +32,7 @@ jobs:
     
     steps:
       # Install the desired version of Apama Community Edition
-      - run: echo "::set-env name=APAMA_INSTALLER_PATH::${{env.HOME}}/apama-installer"
+      - run: echo "::set-env name=APAMA_INSTALLER_PATH::$HOME/apama-installer"
       - name: Cache Apama installer
         uses: actions/cache@v2
         with:
