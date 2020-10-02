@@ -15,7 +15,6 @@ jobs:
     env:
       # Keep this updated with the latest version from http://www.apamacommunity.com/downloads/
       WORKFLOW_APAMA_VERSION: 10.5.3.3
-      APAMA_INSTALLER_PATH: ${{env.HOME}}/apama-installer
 
     strategy:
       # Disable fail fast since it's useful to see test results for all platforms even if some failed
@@ -34,7 +33,7 @@ jobs:
     steps:
       # Install the desired version of Apama Community Edition
       
-      #- run: echo "::set-env name=APAMA_INSTALLER_PATH::$HOME/apama-installer"
+      - run: echo "::set-env name=APAMA_INSTALLER_PATH::$HOME/apama-installer"
       - name: Get Apama installer from cache
         uses: actions/cache@v2
         with:
