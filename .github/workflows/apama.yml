@@ -41,31 +41,31 @@ jobs:
       - name: Download and install Apama
         shell: bash
         run: |
-          echo Checking: ${{env.HOME}}/apama-installer/apama.zip
+          echo Checking: ${{ env.HOME }}/apama-installer/apama.zip
           if [[ ! -f ${{ env.HOME }}/apama-installer/apama.zip ]]; then
             echo Downloading Apama community edition
-            mkdir --parents ${{env.HOME}}/apama-installe
-            wget -O ${{env.HOME}}/apama-installer/apama.zip https://downloads.apamacommunity.com/apama/${{ env.WORKFLOW_APAMA_VERSION }}/apama_${{ env.WORKFLOW_APAMA_VERSION }}_${{ matrix.run-id }}.zip
-            cd ${{env.HOME}}/apama-installer
+            mkdir --parents ${{ env.HOME }}/apama-installer
+            wget -O ${{ env.HOME }}/apama-installer/apama.zip https://downloads.apamacommunity.com/apama/${{ env.WORKFLOW_APAMA_VERSION }}/apama_${{ env.WORKFLOW_APAMA_VERSION }}_${{ matrix.run-id }}.zip
+            cd ${{ env.HOME }}/apama-installer
             unzip apama.zip
           fi
           
-          cat > ${{env.HOME}}/apama-installer-script.txt << EOF
+          cat > ${{ env.HOME }}/apama-installer-script.txt << EOF
           LicenseAgree=Accept
           AcceptInnovationRelease=yes
           InstallProducts=e2ei/11/.latest/Apama/PAMServer
-          PAM.Work.Directory.ID=__VERSION1__,${{env.HOME}}/apama-work
-          InstallDir=${{env.HOME}}/softwareag
+          PAM.Work.Directory.ID=__VERSION1__,${{ env.HOME }}/apama-work
+          InstallDir=${{ env.HOME }}/softwareag
           PAM.Product.Name.ID=0
           HostName=`hostname`
-          sagInstallerLogFile=${{env.HOME}}/softwareag-installer.log
+          sagInstallerLogFile=${{ env.HOME }}/softwareag-installer.log
           EOF
           
           echo Wrote script:
-          cat ${{env.HOME}}/apama-installer-script.txt
+          cat ${{ env.HOME }}/apama-installer-script.txt
           
-          ${{env.HOME}}/apama-installer/install -readScript ${{env.HOME}}/apama-installer-script.txt
-          ls ${{env.HOME}}/softwareag
+          ${{ env.HOME }}/apama-installer/install -readScript ${{ env.HOME }}/apama-installer-script.txt
+          ls ${{ env.HOME }}/softwareag
          
       - uses: actions/checkout@v2
 
@@ -86,7 +86,7 @@ jobs:
         shell: bash
         id: pysys
         run: |
-          . ${{env.HOME}}/softwareag/Apama/apama_env
+          . ${{ env.HOME }}/softwareag/Apama/apama_env
           pysys.py run --ci --outdir=${{matrix.run-id}}
 
       #- name: Upload code coverage
