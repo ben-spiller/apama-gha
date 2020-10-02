@@ -22,7 +22,7 @@ jobs:
       
       matrix:
         include:
-          - run-id: amd64_linuxgit pu
+          - run-id: amd64_linux
             os: ubuntu-latest
             
           #- run-id: amd64_win
@@ -41,7 +41,8 @@ jobs:
       - name: Download and install Apama
         shell: bash
         run: |
-          if [! -f ${{env.HOME}}/apama-installer/apama.zip ]; then
+          echo Checking: ${{env.HOME}}/apama-installer/apama.zip
+          if [[ ! -f ${{ env.HOME }}/apama-installer/apama.zip ]]; then
             echo Downloading Apama community edition
             mkdir --parents ${{env.HOME}}/apama-installe
             wget -O ${{env.HOME}}/apama-installer/apama.zip https://downloads.apamacommunity.com/apama/${{ env.WORKFLOW_APAMA_VERSION }}/apama_${{ env.WORKFLOW_APAMA_VERSION }}_${{ matrix.run-id }}.zip
