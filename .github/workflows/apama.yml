@@ -41,14 +41,13 @@ jobs:
       - name: Download and install Apama
         shell: bash
         run: |
-          echo Checking: $HOME/apama-installer/apama.zip and ${{ env.HOME }} and ${{ env.WORKFLOW_APAMA_VERSION }}  and ${{ env }} and ${{ matrix.run-id }}
           if [[ ! -f $HOME/apama-installer/apama.zip ]]; then
-            echo Downloading Apama community edition
+            echo Downloading Apama community edition (as not yet in the cache)
             mkdir --parents $HOME/apama-installer
             wget --no-verbose -O $HOME/apama-installer/apama.zip https://downloads.apamacommunity.com/apama/${WORKFLOW_APAMA_VERSION}/apama_${WORKFLOW_APAMA_VERSION}_${{ matrix.run-id }}.zip
             cd $HOME/apama-installer
             unzip -q apama.zip
-            mv apama_* ./
+            mv apama_*/* ./
           fi
           
           cat > $HOME/apama-installer-script.txt << EOF
