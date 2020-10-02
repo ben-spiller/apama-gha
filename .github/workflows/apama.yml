@@ -48,7 +48,7 @@ jobs:
             wget --no-verbose -O $HOME/apama-installer/apama.zip https://downloads.apamacommunity.com/apama/${WORKFLOW_APAMA_VERSION}/apama_${WORKFLOW_APAMA_VERSION}_${{ matrix.run-id }}.zip
             cd $HOME/apama-installer
             unzip -q apama.zip
-            mv apama-* ./
+            mv apama_* ./
           fi
           
           cat > $HOME/apama-installer-script.txt << EOF
