@@ -41,6 +41,7 @@ jobs:
       - name: Download and install Apama
         shell: bash
         run: |
+          pwd
           echo Things in $HOME are:
           ls $HOME
           echo end.
@@ -69,8 +70,8 @@ jobs:
           echo Wrote script:
           cat $HOME/apama-installer-script.txt
           
-          $HOME/apama-installer/install -readScript $HOME/apama-installer-script.txt
-          ls $HOME/softwareag
+          #$HOME/apama-installer/install -readScript $HOME/apama-installer-script.txt
+          #ls $HOME/softwareag
          
       - uses: actions/checkout@v2
 
