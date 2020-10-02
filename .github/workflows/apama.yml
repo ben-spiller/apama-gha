@@ -1,5 +1,7 @@
 # This workflow installs Apama Community Edition and uses it to run PySys tests for your application
 
+# Using this workflow implies that you have agreed to the terms of the Software AG license agreement - see http://www.apamacommunity.com/terms-conditions/
+
 name: PySys
 
 on:
@@ -10,58 +12,87 @@ on:
 
 jobs:
   test:
+    env:
+      # Keep this updated with the latest version from http://www.apamacommunity.com/downloads/
+      WORKFLOW_APAMA_VERSION: 10.5.3.3 
+
     strategy:
       # Disable fail fast since it's useful to see test results for all platforms even if some failed
       fail-fast: false
       
       matrix:
         include:
-          - test-run-id: ubuntu
+          - run-id: amd64_linux
             os: ubuntu-latest
             
-          - test-run-id: win
-            os: windows-latest
+          #- run-id: amd64_win
+          #  os: windows-latest
             
     runs-on: ${{matrix.os}}
     
     steps:
-      # Install the desired version of Python and PySys
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      # Install the desired version of Apama Community Edition
+      - name: Cache Apama installer
+        uses: actions/cache@v2
         with:
-          python-version: 3.8
-      - name: Install Python dependencies
-        run: |
-          python -m pip install --upgrade pip
+            path: ${{env.HOME}}/apama-installer
+            key: apamainstaller-${{ matrix.run-id }}-${{ env.WORKFLOW_APAMA_VERSION }}
 
-          # Use older version of coverage as 5.0 requires an SQLite version that doesn't work on this macos image currently
-          pip install coverage==4.5.4
-
-      - name: Install PySys dependencies - Windows
-        if: runner.os == 'Windows'
-        run: |
-          pip install pywin32 colorama
-
-      - name: Test sample-getting-started
-        working-directory: samples/getting-started/test
+      - name: Download and install Apama
         shell: bash
-        id: pysys-getting-started
         run: |
-          PYTHONPATH=../../.. python -m pysys run --ci --outdir=getting-started-${{matrix.test-run-id}}
+          if [! -f ${{env.HOME}}/apama-installer/apama.zip ]; then
+            echo Downloading Apama community edition
+            mkdir --parents ${{env.HOME}}/apama-installe
+            wget -O ${{env.HOME}}/apama-installer/apama.zip https://downloads.apamacommunity.com/apama/${{ env.WORKFLOW_APAMA_VERSION }}/apama_${{ env.WORKFLOW_APAMA_VERSION }}_${{ matrix.run-id }}.zip
+            cd ${{env.HOME}}/apama-installer
+            unzip apama.zip
+          fi
+          
+          cat > ${{env.HOME}}/apama-installer-script.txt << EOF
+          LicenseAgree=Accept
+          AcceptInnovationRelease=yes
+          InstallProducts=e2ei/11/.latest/Apama/PAMServer
+          PAM.Work.Directory.ID=__VERSION1__,${{env.HOME}}/apama-work
+          InstallDir=${{env.HOME}}/softwareag
+          PAM.Product.Name.ID=0
+          HostName=`hostname`
+          sagInstallerLogFile=${{env.HOME}}/softwareag-installer.log
+          EOF
+          
+          echo Wrote script:
+          cat ${{env.HOME}}/apama-installer-script.txt
+          
+         ${{env.HOME}}/apama-installer/install -readScript ${{env.HOME}}/apama-installer-script.txt
+         ls ${{env.HOME}}/softwareag
+         
+      - uses: actions/checkout@v2
 
-      - name: Test sample-cookbook (expected failures)
-        working-directory: samples/cookbook/test
+      #- name: wget
+      #  uses: wei/wget@v1
+      #  with:
+      #    args: -O ${{env.HOME}}/apama-installer/apama.zip https://downloads.apamacommunity.com/apama/${{ env.WORKFLOW_APAMA_VERSION }}/apama_${{ env.WORKFLOW_APAMA_VERSION }}_${{ matrix.run-id }}.zip
+
+      #- uses: actions/setup-python@v2
+      #  with:
+      #    python-version: 3.8
+      #- name: Install Python dependencies
+      #  run: |
+      #    python -m pip install --upgrade pip
+
+      - name: PySys tests
+        working-directory: test
         shell: bash
         id: pysys
         run: |
-          PYTHONPATH=../../.. python -m pysys run --ci --outdir=cookbook-${{matrix.test-run-id}}
+          . ${{env.HOME}}/softwareag/Apama/apama_env
+          pysys.py run --ci --outdir=${{matrix.run-id}}
 
-      - name: Upload Python code coverage
-        uses: codecov/codecov-action@v1
-        # In a real configuration we would only upload coverage on success, but for test puroses we add "always()" here
-        if: steps.pysys.outputs.artifact_PythonCoverageDir
-        with:
-          file: ${{ steps.pysys.outputs.artifact_PythonCoverageDir }}/coverage.xml
+      #- name: Upload code coverage
+      #  uses: codecov/codecov-action@v1
+      #  if: steps.pysys.outputs.artifact_EPLCoverageDir
+      #  with:
+      #    file: ${{ steps.pysys.outputs.artifact_EPLCoverageDir }}/epl_coverage.xml
         
       # If any tests fail, PySys will return an error code, so we need "if: always()" so the following steps will run
       # Since we expect failures only from the cookbook sample, that's the one we upload artifacts for (using id=pysys)
