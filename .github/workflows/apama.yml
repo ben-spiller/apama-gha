@@ -32,10 +32,11 @@ jobs:
     
     steps:
       # Install the desired version of Apama Community Edition
+      - run: echo "::set-env name=APAMA_INSTALLER_PATH::${{env.HOME}}/apama-installer"
       - name: Cache Apama installer
         uses: actions/cache@v2
         with:
-            path: ../apama-installer
+            path: ${{ env.APAMA_INSTALLER_PATH }}
             key: apamainstaller-${{ matrix.run-id }}-${{ env.WORKFLOW_APAMA_VERSION }}
 
       - name: Download and install Apama
@@ -44,11 +45,12 @@ jobs:
           pwd
           echo Things in $HOME are:
           ls $HOME
+          echo Got $APAMA_INSTALLER_PATH
           echo end.
-          if [[ ! -f apama-installer/apama.zip ]]; then
+          if [[ ! -f ${APAMA_INSTALLER_PATH}/apama.zip ]]; then
             echo Downloading Apama community edition - not yet in the local cache
-            mkdir --parents ../apama-installer
-            pushd ../apama-installer
+            mkdir --parents ${APAMA_INSTALLER_PATH}
+            pushd ${APAMA_INSTALLER_PATH}
             wget --no-verbose -O apama.zip https://downloads.apamacommunity.com/apama/${WORKFLOW_APAMA_VERSION}/apama_${WORKFLOW_APAMA_VERSION}_${{ matrix.run-id }}.zip
             unzip -q apama.zip
             mv apama_*/* ./
@@ -64,7 +66,7 @@ jobs:
           PAM.Product.Name.ID=0
           HostName=`hostname`
           sagInstallerLogFile=$HOME/softwareag-installer.log
-          imageFile=../apama-installer/data/SAGImage.zip
+          imageFile=$APAMA_INSTALLER_PATH/data/SAGImage.zip
           EOF
           
           echo Wrote script:
