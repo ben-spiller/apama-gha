@@ -42,7 +42,7 @@ jobs:
         shell: bash
         run: |
           if [[ ! -f $HOME/apama-installer/apama.zip ]]; then
-            echo Downloading Apama community edition (as not yet in the cache)
+            echo Downloading Apama community edition - not yet in the local cache
             mkdir --parents $HOME/apama-installer
             wget --no-verbose -O $HOME/apama-installer/apama.zip https://downloads.apamacommunity.com/apama/${WORKFLOW_APAMA_VERSION}/apama_${WORKFLOW_APAMA_VERSION}_${{ matrix.run-id }}.zip
             cd $HOME/apama-installer
