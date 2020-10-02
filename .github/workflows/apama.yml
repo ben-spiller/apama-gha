@@ -45,7 +45,7 @@ jobs:
           if [[ ! -f $HOME/apama-installer/apama.zip ]]; then
             echo Downloading Apama community edition
             mkdir --parents $HOME/apama-installer
-            wget -O $HOME/apama-installer/apama.zip https://downloads.apamacommunity.com/apama/$WORKFLOW_APAMA_VERSION/apama_$WORKFLOW_APAMA_VERSION_${{ matrix.run-id }}.zip
+            wget -O $HOME/apama-installer/apama.zip https://downloads.apamacommunity.com/apama/${WORKFLOW_APAMA_VERSION}/apama_${WORKFLOW_APAMA_VERSION}_${{ matrix.run-id }}.zip
             cd $HOME/apama-installer
             unzip apama.zip
           fi
