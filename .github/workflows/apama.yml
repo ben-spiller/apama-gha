@@ -64,7 +64,6 @@ jobs:
           InstallProducts=e2ei/11/.latest/Apama/PAMServer
           PAM.Work.Directory.ID=__VERSION1__,$HOME/apama-work
           InstallDir=$HOME/softwareag
-          HostName=`hostname`
           sagInstallerLogFile=$HOME/softwareag-installer.log
           imageFile=$APAMA_INSTALLER_PATH/data/SAGImage.zip
           EOF
@@ -94,7 +93,7 @@ jobs:
         shell: bash
         id: pysys
         run: |
-          . $HOME/softwareag/Apama/apama_env
+          . $HOME/softwareag/Apama/bin/apama_env
           pysys.py run --ci --outdir=${{matrix.run-id}}
 
       #- name: Upload code coverage
