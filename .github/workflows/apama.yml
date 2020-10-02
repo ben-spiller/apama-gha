@@ -64,8 +64,8 @@ jobs:
           echo Wrote script:
           cat $HOME/apama-installer-script.txt
           
-          #$HOME/apama-installer/install -readScript $HOME/apama-installer-script.txt
-          #ls $HOME/softwareag
+          $HOME/apama-installer/install -readScript $HOME/apama-installer-script.txt
+          ls $HOME/softwareag
          
       - uses: actions/checkout@v2
 
@@ -86,8 +86,8 @@ jobs:
         shell: bash
         id: pysys
         run: |
-          #. $HOME/softwareag/Apama/apama_env
-          #pysys.py run --ci --outdir=${{matrix.run-id}}
+          . $HOME/softwareag/Apama/apama_env
+          pysys.py run --ci --outdir=${{matrix.run-id}}
 
       #- name: Upload code coverage
       #  uses: codecov/codecov-action@v1
