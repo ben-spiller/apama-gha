@@ -35,19 +35,23 @@ jobs:
       - name: Cache Apama installer
         uses: actions/cache@v2
         with:
-            path: ${{env.HOME}}/apama-installer
+            path: apama-installer
             key: apamainstaller-${{ matrix.run-id }}-${{ env.WORKFLOW_APAMA_VERSION }}
 
       - name: Download and install Apama
         shell: bash
         run: |
-          if [[ ! -f $HOME/apama-installer/apama.zip ]]; then
+          echo Things in $HOME are:
+          ls $HOME
+          echo end.
+          if [[ ! -f apama-installer/apama.zip ]]; then
             echo Downloading Apama community edition - not yet in the local cache
-            mkdir --parents $HOME/apama-installer
-            wget --no-verbose -O $HOME/apama-installer/apama.zip https://downloads.apamacommunity.com/apama/${WORKFLOW_APAMA_VERSION}/apama_${WORKFLOW_APAMA_VERSION}_${{ matrix.run-id }}.zip
-            cd $HOME/apama-installer
+            mkdir --parents apama-installer
+            wget --no-verbose -O apama-installer/apama.zip https://downloads.apamacommunity.com/apama/${WORKFLOW_APAMA_VERSION}/apama_${WORKFLOW_APAMA_VERSION}_${{ matrix.run-id }}.zip
+            cd apama-installer
             unzip -q apama.zip
             mv apama_*/* ./
+            cd ..
           fi
           
           cat > $HOME/apama-installer-script.txt << EOF
@@ -59,6 +63,7 @@ jobs:
           PAM.Product.Name.ID=0
           HostName=`hostname`
           sagInstallerLogFile=$HOME/softwareag-installer.log
+          imageFile=$HOME/apama-installer/data/SAGImage.zip
           EOF
           
           echo Wrote script:
