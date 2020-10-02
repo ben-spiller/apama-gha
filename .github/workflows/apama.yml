@@ -49,7 +49,7 @@ jobs:
             wget --no-verbose -O ${APAMA_INSTALLER_PATH}/apama.zip https://downloads.apamacommunity.com/apama/${WORKFLOW_APAMA_VERSION}/apama_${WORKFLOW_APAMA_VERSION}_${{ matrix.run-id }}.zip
           fi
 
-          # We cache the zip not the unpackaged, since cacheing the unpacked dir is currently slower than unpackaing it each time
+          # We cache the zip not the unzipped dir, since caching the unpacked dir is currently slower than unpacking it each time
           pushd ${APAMA_INSTALLER_PATH}
           unzip -q apama.zip
           mv apama_*/* ./
