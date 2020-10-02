@@ -91,7 +91,8 @@ jobs:
         id: pysys
         run: |
           . $HOME/softwareag/Apama/bin/apama_env
-          pysys.py run --ci --outdir=${{matrix.run-id}}
+          # TODO: add ci option once we're on 10.7
+          pysys.py run --outdir=${{matrix.run-id}} -Xeplcoverage
 
       #- name: Upload code coverage
       #  uses: codecov/codecov-action@v1
