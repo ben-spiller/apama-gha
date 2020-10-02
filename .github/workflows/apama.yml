@@ -35,7 +35,7 @@ jobs:
       - name: Cache Apama installer
         uses: actions/cache@v2
         with:
-            path: apama-installer
+            path: ../apama-installer
             key: apamainstaller-${{ matrix.run-id }}-${{ env.WORKFLOW_APAMA_VERSION }}
 
       - name: Download and install Apama
@@ -47,12 +47,12 @@ jobs:
           echo end.
           if [[ ! -f apama-installer/apama.zip ]]; then
             echo Downloading Apama community edition - not yet in the local cache
-            mkdir --parents apama-installer
-            wget --no-verbose -O apama-installer/apama.zip https://downloads.apamacommunity.com/apama/${WORKFLOW_APAMA_VERSION}/apama_${WORKFLOW_APAMA_VERSION}_${{ matrix.run-id }}.zip
-            cd apama-installer
+            mkdir --parents ../apama-installer
+            pushd ../apama-installer
+            wget --no-verbose -O apama.zip https://downloads.apamacommunity.com/apama/${WORKFLOW_APAMA_VERSION}/apama_${WORKFLOW_APAMA_VERSION}_${{ matrix.run-id }}.zip
             unzip -q apama.zip
             mv apama_*/* ./
-            cd ..
+            popd
           fi
           
           cat > $HOME/apama-installer-script.txt << EOF
@@ -64,13 +64,13 @@ jobs:
           PAM.Product.Name.ID=0
           HostName=`hostname`
           sagInstallerLogFile=$HOME/softwareag-installer.log
-          imageFile=$HOME/apama-installer/data/SAGImage.zip
+          imageFile=../apama-installer/data/SAGImage.zip
           EOF
           
           echo Wrote script:
           cat $HOME/apama-installer-script.txt
           
-          #$HOME/apama-installer/install -readScript $HOME/apama-installer-script.txt
+          #../apama-installer/install -readScript $HOME/apama-installer-script.txt
           #ls $HOME/softwareag
          
       - uses: actions/checkout@v2
@@ -92,8 +92,8 @@ jobs:
         shell: bash
         id: pysys
         run: |
-          . $HOME/softwareag/Apama/apama_env
-          pysys.py run --ci --outdir=${{matrix.run-id}}
+          #. $HOME/softwareag/Apama/apama_env
+          #pysys.py run --ci --outdir=${{matrix.run-id}}
 
       #- name: Upload code coverage
       #  uses: codecov/codecov-action@v1
