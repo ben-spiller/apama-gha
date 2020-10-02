@@ -1,0 +1,62 @@
+// $Copyright (c) 2020 Software AG, Darmstadt, Germany and/or Software AG USA Inc., Reston, VA, USA, and/or its subsidiaries and/or its affiliates and/or their licensors.$
+// Use, reproduction, transfer, publication or disclosure is prohibited except as specifically provided for in your License Agreement with Software AG
+
+package apamax.myapp;
+
+/**
+ * Input temperature reading
+ */
+event Temperature {
+	string sensorId;
+	float temperature; 
+}
+
+/** 
+ * Sensor configuration
+ */
+event AddSensor {
+	string sensorId;
+	float targetTemperature;
+}
+
+/**
+ * Output alert
+ */
+event Alert	 {
+	string sensorId;
+	string type;
+	float temperature;
+	float time;
+}
+
+
+monitor SensorMonitor 
+{
+	
+	action onload () 
+	{
+		log "Loaded SensorMonitor v1.0" at INFO;
+		
+		// Spawn a monitor instance for each sensor
+		on all AddSensor() as sensor {
+			spawn monitorSensor(sensor.sensorId, sensor.targetTemperature);
+		}
+	}
+
+	action monitorSensor(string sensorId, float targetTemperature) 
+	{	
+		log "Now monitoring sensor: "+sensorId at INFO;
+
+		monitor.subscribe("Factory1");
+
+		on all Temperature(sensorId = sensorId, temperature >= targetTemperature * 1.02) as temp 
+		{
+			send Alert(sensorId, "TEMP_RISE", temp.temperature, currentTime) to "Alerts";
+		}
+
+		on all Temperature(sensorId = sensorId, temperature < -273.15) as temp 
+		{
+			log "Invalid temperature value "+temp.temperature.toString()+" from sensor "+sensorId at ERROR;
+		}
+	}
+}

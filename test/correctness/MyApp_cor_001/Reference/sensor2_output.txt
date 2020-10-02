@@ -1,0 +1,2 @@
+{'.eventType': 'apamax.myapp.Alert', 'sensorId': 'TempSensor002', 'temperature': 891.4444, 'type': 'TEMP_RISE'}
+{'.eventType': 'apamax.myapp.Alert', 'sensorId': 'TempSensor002', 'temperature': 923.1, 'type': 'TEMP_RISE'}

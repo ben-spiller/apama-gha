@@ -1,0 +1,24 @@
+# Copyright (c) 2020 Software AG, Darmstadt, Germany and/or Software AG USA Inc., Reston, VA, USA, and/or its subsidiaries and/or its affiliates and/or their licensors. 
+# Use, reproduction, transfer, publication or disclosure is prohibited except as specifically provided for in your License Agreement with Software AG
+
+# Format is: Channel,event
+"Factory1",apamax.myapp.Temperature("TempSensor001", 90)
+"Factory1",apamax.myapp.Temperature("TempSensor002", 84)
+"Factory1",apamax.myapp.Temperature("TempSensor003", 150)
+"Factory2",apamax.myapp.Temperature("TempSensor001", 111)
+
+"Factory1",apamax.myapp.Temperature("TempSensor001", 100)
+"Factory1",apamax.myapp.Temperature("TempSensor002", 85)
+"Factory1",apamax.myapp.Temperature("TempSensor003", 200)
+"Factory2",apamax.myapp.Temperature("TempSensor001", 130)
+
+"Factory1",apamax.myapp.Temperature("TempSensor001", 111)
+"Factory1",apamax.myapp.Temperature("TempSensor002", 891.4444)
+
+"Factory1",apamax.myapp.Temperature("TempSensor003", 90)
+"Factory2",apamax.myapp.Temperature("TempSensor001", 120)
+"Factory1",apamax.myapp.Temperature("TempSensor001", 120)
+
+"Factory1",apamax.myapp.Temperature("TempSensor002", 923.1)
+"Factory1",apamax.myapp.Temperature("TempSensor003", 90)
+"Factory1",apamax.myapp.Temperature("TempSensor001", 145.2)
