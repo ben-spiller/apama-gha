@@ -22,7 +22,7 @@ jobs:
       
       matrix:
         include:
-          - run-id: amd64_linux
+          - run-id: amd64_linuxgit pu
             os: ubuntu-latest
             
           #- run-id: amd64_win
@@ -63,8 +63,8 @@ jobs:
           echo Wrote script:
           cat ${{env.HOME}}/apama-installer-script.txt
           
-         ${{env.HOME}}/apama-installer/install -readScript ${{env.HOME}}/apama-installer-script.txt
-         ls ${{env.HOME}}/softwareag
+          ${{env.HOME}}/apama-installer/install -readScript ${{env.HOME}}/apama-installer-script.txt
+          ls ${{env.HOME}}/softwareag
          
       - uses: actions/checkout@v2
 
