@@ -72,7 +72,7 @@ jobs:
           echo Wrote script:
           cat $HOME/apama-installer-script.txt
           
-          #../apama-installer/install -readScript $HOME/apama-installer-script.txt
+          ../apama-installer/install -readScript $HOME/apama-installer-script.txt
           #ls $HOME/softwareag
          
       - uses: actions/checkout@v2
