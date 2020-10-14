@@ -2,4 +2,4 @@
 [![Apama version](https://img.shields.io/badge/Apama-v10.5.3+-blue)](http://www.apamacommunity.com/)
 
 # apama-gha
-Apama sample project with GitHub Actions deployment and testing
+Apama sample project with GitHub Actions deployment and testing.
