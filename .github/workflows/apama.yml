@@ -24,6 +24,7 @@ jobs:
         include:
           - run-id: amd64_linux
             os: ubuntu-latest
+            release-docs: true
             
           - run-id: amd64_win
             os: windows-latest
@@ -31,14 +32,14 @@ jobs:
     runs-on: ${{matrix.os}}
     
     steps:
-      # Install the desired version of Apama Community Edition
-      
-      - run: echo "::set-env name=APAMA_INSTALLER_PATH::$HOME/apama-installer"
+      # Install the full Apama Community Edition. This contains useful tools such as apamadoc which are not in the 
+      # smaller "core" package
+      - run: echo "APAMA_INSTALLER_PATH=$HOME/apama-installer" >> $GITHUB_ENV
       - name: Get Apama installer from cache
         uses: actions/cache@v2
         with:
             path: ${{ env.APAMA_INSTALLER_PATH }}/apama.zip
-            key: apamainstaller-${{ matrix.run-id }}-${{ env.WORKFLOW_APAMA_VERSION }}-zipv2
+            key: apamainstaller-${{ matrix.run-id }}-${{ env.WORKFLOW_APAMA_VERSION }}-zip-xxx
 
       - name: Download and install Apama
         shell: bash
@@ -65,30 +66,29 @@ jobs:
           EOF
           
           ${APAMA_INSTALLER_PATH}/install -readScript $HOME/apama-installer-script.txt
-          #ls $HOME/softwareag
-         
+          
+          # Once installed, copy the most important env vars into the workflow's env for later steps
+	  # This allows running processes such as Python and pip directly
+          . $HOME/softwareag/Apama/bin/apama_env
+          echo "APAMA_HOME=$APAMA_HOME" >> $GITHUB_ENV
+          echo "$PATH" >> $GITHUB_PATH
+          #echo "$LD_LIBRARY_PATH" >> $GITHUB_PATH
       - uses: actions/checkout@v2
 
-      #- name: wget
-      #  uses: wei/wget@v1
-      #  with:
-      #    args: -O ${{env.HOME}}/apama-installer/apama.zip https://downloads.apamacommunity.com/apama/${{ env.WORKFLOW_APAMA_VERSION }}/apama_${{ env.WORKFLOW_APAMA_VERSION }}_${{ matrix.run-id }}.zip
-
-      #- uses: actions/setup-python@v2
-      #  with:
-      #    python-version: 3.8
-      #- name: Install Python dependencies
-      #  run: |
-      #    python -m pip install --upgrade pip
+      - name: Build project
+        shell: bash
+        run: |
+          . $APAMA_HOME/bin/apama_env
+          ant
 
       - name: PySys tests
         working-directory: test
         shell: bash
         id: pysys
         run: |
-          . $HOME/softwareag/Apama/bin/apama_env
-          # TODO: add ci option once we're on 10.7
-          pysys.py run --outdir=${{matrix.run-id}} -Xeplcoverage
+          . $APAMA_HOME/bin/apama_env
+          # TODO: add ci option, remove absolute path and modernize code coverage approach once we're on 10.7
+          pysys.py run --outdir=`pwd`/${{matrix.run-id}} -Xeplcoverage --threads=auto
 
       #- name: Upload code coverage
       #  uses: codecov/codecov-action@v1
@@ -100,19 +100,35 @@ jobs:
       # Since we expect failures only from the cookbook sample, that's the one we upload artifacts for (using id=pysys)
       # The follow lines are a copy from the sample pysys workflow
 
-      - name: Upload performance CSV artifacts
-        uses: actions/upload-artifact@v2
-        # Only do this if some performance results were generated
-        if: always() && steps.pysys.outputs.artifact_CSVPerformanceReport
+      #- name: Upload performance CSV artifacts
+      #  uses: actions/upload-artifact@v2
+      #  # Only do this if some performance results were generated
+      #  if: always() && steps.pysys.outputs.artifact_CSVPerformanceReport
 
-        with:
-          name: pysys_performance_${{matrix.test-run-id}}
-          path: ${{ steps.pysys.outputs.artifact_CSVPerformanceReport }}
+      #  with:
+      #    name: pysys_performance_${{matrix.test-run-id}}
+      #    path: ${{ steps.pysys.outputs.artifact_CSVPerformanceReport }}
 
+      # TODO: could also upload epl code coverage (in 10.7.1 this will be easier due to epl_coverage.xml) 
+      
       - name: Upload archive artifacts for any test failures
         uses: actions/upload-artifact@v2
-        if: always() && steps.pysys.outputs.artifact_TestOutputArchiveDir
+        if: failure()
 
         with:
-          name: pysys_output_${{matrix.test-run-id}}
-          path: ${{ steps.pysys.outputs.artifact_TestOutputArchiveDir }}
+          name: pysys_output_${{matrix.run-id}}
+          path: test/__pysys_output/${{matrix.run-id}}
+
+      - name: Build apamadoc
+        shell: bash
+        run: |
+          . $APAMA_HOME/bin/apama_env
+          apamadoc __build/apamadoc $APAMA_HOME/samples/epl/simple
+      - name: Upload apamadoc to gh-pages
+        if: ${{matrix.release-docs}}
+        #if: github.event_name == 'release'
+        uses: JamesIves/github-pages-deploy-action@3.6.2
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: gh-pages
+          FOLDER: __build/apamadoc
