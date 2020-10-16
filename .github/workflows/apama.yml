@@ -77,7 +77,7 @@ jobs:
           ${APAMA_INSTALLER_PATH}/install -readScript $HOME/apama-installer-script.txt
           
           # Once installed, copy the most important env vars into the workflow's env for later steps
-	  # This allows running processes such as Python and pip directly
+          # This allows running processes such as Python and pip directly
           . $HOME/softwareag/Apama/bin/apama_env
           echo "APAMA_HOME=$APAMA_HOME" >> $GITHUB_ENV
           echo "$PATH" >> $GITHUB_PATH
