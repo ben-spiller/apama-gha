@@ -32,9 +32,10 @@ jobs:
     runs-on: ${{matrix.os}}
     
     steps:
-      # Install the full Apama Community Edition. This contains useful tools such as apamadoc which are not in the 
-      # smaller "core" package
-      - run: echo "APAMA_INSTALLER_PATH=$HOME/apama-installer" >> $GITHUB_ENV
+      # Install the full Apama Community Edition. This contains useful tools such as apamadoc/apama_project 
+      # which are not in the smaller "core" package
+      - shell: bash
+        run: echo "APAMA_INSTALLER_PATH=$HOME/apama-installer" >> $GITHUB_ENV
       - name: Get Apama installer from cache
         uses: actions/cache@v2
         id: cache-apama-installer
@@ -46,7 +47,7 @@ jobs:
         uses: carlosperate/download-file-action@v1.0.3
         if: steps.cache-apama-installer.outputs.cache-hit != 'true'
         with:
-           file-url: 'https://downloads.apamacommunity.com/apama/${WORKFLOW_APAMA_VERSION}/apama_${WORKFLOW_APAMA_VERSION}_${{ matrix.run-id }}.zip'
+           file-url: 'https://downloads.apamacommunity.com/apama/${{ env.WORKFLOW_APAMA_VERSION }}/apama_${{ env.WORKFLOW_APAMA_VERSION }}_${{ matrix.run-id }}.zip'
            file-name: apama.zip
            location: ${{ env.APAMA_INSTALLER_PATH }}
 
