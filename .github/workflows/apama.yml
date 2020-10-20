@@ -49,7 +49,7 @@ jobs:
         with:
            file-url: 'https://downloads.apamacommunity.com/apama/${{ env.WORKFLOW_APAMA_VERSION }}/apama_${{ env.WORKFLOW_APAMA_VERSION }}_${{ matrix.run-id }}.zip'
            file-name: apama.zip
-           location: ${{ env.APAMA_INSTALLER_PATH }}
+           location: ${{ env.HOME }}/apama-installer
 
       - name: Install Apama
         shell: bash
@@ -141,6 +141,7 @@ jobs:
         shell: bash
         run: |
           . $APAMA_HOME/bin/apama_env
+          mkdir __build
           apamadoc __build/apamadoc $APAMA_HOME/samples/epl/simple
       - name: Upload apamadoc to gh-pages
         if: ${{matrix.release-docs}}
