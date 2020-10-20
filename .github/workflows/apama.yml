@@ -14,7 +14,7 @@ jobs:
   test:
     env:
       # Keep this updated with the latest version from http://www.apamacommunity.com/downloads/
-      WORKFLOW_APAMA_VERSION: 10.5.3.3
+      WORKFLOW_APAMA_VERSION: 10.5.3.2
 
     strategy:
       # Disable fail fast since it's useful to see test results for all platforms even if some failed
