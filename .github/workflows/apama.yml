@@ -61,6 +61,13 @@ jobs:
           #fi
 
           # We cache the zip not the unzipped dir, since caching the unpacked dir is currently slower than unpacking it each time
+          echo pwd:
+          pwd
+          echo ls:
+          ls
+          echo ls home:
+          ls $HOME
+          
           pushd ${APAMA_INSTALLER_PATH}
           unzip -q apama.zip
           mv apama_*/* ./
@@ -88,8 +95,9 @@ jobs:
       - name: Build project
         shell: bash
         run: |
-          . $APAMA_HOME/bin/apama_env
-          ant
+          echo TODO
+          # . $APAMA_HOME/bin/apama_env
+          #ant
 
       - name: PySys tests
         working-directory: test
