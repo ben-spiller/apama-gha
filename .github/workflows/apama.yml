@@ -56,7 +56,7 @@ jobs:
         if: steps.cache-apama-installer.outputs.cache-hit != 'true'
         run: |
           cd ../apama-installer
-          unzip -q ${{ steps.download-apama.outputs.file-path }}
+          unzip -q apama-installer.zip
           mv apama_*/* ./
           
           if [[ ${{runner.os}} = Windows ]]; then
