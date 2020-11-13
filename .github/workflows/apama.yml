@@ -166,7 +166,7 @@ jobs:
         run: |
           # TODO: add ci option, remove absolute path and modernize code coverage approach once we're on 10.7
           # TODO: add equivalent of --ci e.g. all modes, purge, failures only
-          PYSYS_COLOR=true $APAMA_PYSYS run --outdir=`pwd`/${{matrix.run-id}} -Xeplcoverage --threads=auto
+          echo PYSYS_COLOR=true $APAMA_PYSYS run --outdir=`pwd`/${{matrix.run-id}} -Xeplcoverage --threads=auto
 
       #- name: Upload code coverage
       #  uses: codecov/codecov-action@v1
