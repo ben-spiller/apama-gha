@@ -49,20 +49,13 @@ jobs:
         with:
            file-url: 'https://downloads.apamacommunity.com/apama/${{ env.WORKFLOW_APAMA_VERSION }}/apama_${{ env.WORKFLOW_APAMA_VERSION }}_${{ matrix.run-id }}.zip'
            file-name: apama-installer.zip
-           location: apama-installer
+           location: ../apama-installer
 
       - name: Install Apama
         shell: bash
         if: steps.cache-apama-installer.outputs.cache-hit != 'true'
         run: |
-          ls
-          echo pwd:
-          pwd
-          echo ls ~:
-          ls ~
-          echo workspace=$GITHUB_WORKSPACE
-          ls $GITHUB_WORKSPACE
-          cd apama-installer
+          cd ../apama-installer
           unzip -q ${{ steps.download-apama.outputs.file-path }}
           mv apama_*/* ./
           
