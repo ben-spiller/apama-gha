@@ -74,10 +74,9 @@ jobs:
           unzip -q apama.zip
           mv apama_*/* ./
           
-          # Must use forward slashes in these paths or bash will get confused
-          if [[ ${{runner.os}}=windows ]]; then
+          if [[ ${{runner.os}} = windows ]]; then
             echo This is windows!
-            APAMA_INSTALL_DIR=c:/SoftwareAG
+            APAMA_INSTALL_DIR=c:\\\\SoftwareAG
           else
             echo This is not Windows !
             APAMA_INSTALL_DIR=/opt/SoftwareAG
