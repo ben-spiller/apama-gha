@@ -60,7 +60,7 @@ jobs:
           mv apama_*/* ./
           
           if [[ ${{runner.os}} = Windows ]]; then
-            _SAG_INSTALL_PATH=C:\\SoftwareAG\xxx
+            _SAG_INSTALL_PATH=C:\\SoftwareAG\\xxx
           else
             _SAG_INSTALL_PATH=/opt/softwareag
           fi
