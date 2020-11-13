@@ -65,7 +65,7 @@ jobs:
             _SAG_INSTALL_PATH=/opt/softwareag
           fi
           # Make this available to later steps
-          echo "_SAG_INSTALL_PATH=$SAG_INSTALL_PATH" >> $GITHUB_ENV
+          echo "_SAG_INSTALL_PATH=$_SAG_INSTALL_PATH" >> $GITHUB_ENV
           
           cat > apama-installer-script.txt << EOF
           LicenseAgree=Accept
