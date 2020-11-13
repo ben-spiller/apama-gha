@@ -38,7 +38,7 @@ jobs:
         uses: actions/cache@v2
         id: cache-apama-installer
         with:
-            path: ${{ runner.temp }}/apama-installer/apama.zip
+            path: ${{ github.workspace }}/apama-installer/apama.zip
             key: apamainstaller-${{ matrix.run-id }}-${{ env.WORKFLOW_APAMA_VERSION }}-zip-xxx
 
       - name: Download Apama
@@ -47,12 +47,13 @@ jobs:
         with:
            file-url: 'https://downloads.apamacommunity.com/apama/${{ env.WORKFLOW_APAMA_VERSION }}/apama_${{ env.WORKFLOW_APAMA_VERSION }}_${{ matrix.run-id }}.zip'
            file-name: apama.zip
-           location: ${{ runner.temp }}/apama-installer
+           location: ${{ github.workspace }}/apama-installer
 
       - name: Install Apama
         shell: bash
         run: |
-          APAMA_INSTALLER_PATH=`sed 's/\\/\//g' ${{ runner.temp }}`/apama-installer
+          APAMA_INSTALLER_PATH=$GITHUB_WORKSPACE/apama-installer
+          env
           echo installer path=$APAMA_INSTALLER_PATH
           
           #if [[ ! -f ${APAMA_INSTALLER_PATH}/apama.zip ]]; then
@@ -61,7 +62,6 @@ jobs:
           #  wget --no-verbose -O ${APAMA_INSTALLER_PATH}/apama.zip https://downloads.apamacommunity.com/apama/${WORKFLOW_APAMA_VERSION}/apama_${WORKFLOW_APAMA_VERSION}_${{ matrix.run-id }}.zip
           #fi
           
-          echo runner.temp=${{ runner.temp }}
           echo PATH=$PATH
           echo LD_PATH=$LD_LIBRARY_PATH
           echo GH env:
