@@ -127,7 +127,7 @@ jobs:
           echo Got:
           cat apama.env
 
-          echo "$PATH" >> $GITHUB_PATH
+          #echo "$PATH" >> $GITHUB_PATH
           cat apama.env >> $GITHUB_ENV
           
           #echo "APAMA_HOME=$APAMA_HOME" >> $GITHUB_ENV
@@ -162,7 +162,8 @@ jobs:
         run: |
           #. $APAMA_HOME/bin/apama_env
           # TODO: add ci option, remove absolute path and modernize code coverage approach once we're on 10.7
-          #pysys.py run --outdir=`pwd`/${{matrix.run-id}} -Xeplcoverage --threads=auto
+          # TODO: add equivalent of --ci e.g. all modes, purge, failures only
+          pysys.py run --outdir=`pwd`/${{matrix.run-id}} -Xeplcoverage --threads=auto
 
       #- name: Upload code coverage
       #  uses: codecov/codecov-action@v1
@@ -198,7 +199,8 @@ jobs:
         run: |
           #. $APAMA_HOME/bin/apama_env
           mkdir --parents __build/apamadoc
-          #apamadoc __build/apamadoc $APAMA_HOME/samples/epl/simple
+          apamadoc __build/apamadoc $APAMA_HOME/samples/epl/simple
+     
       - name: Upload apamadoc to gh-pages
         if: ${{matrix.release-docs}}
         #if: github.event_name == 'release'
