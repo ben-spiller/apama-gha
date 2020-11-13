@@ -27,8 +27,8 @@ jobs:
             os: ubuntu-latest
             release-docs: true
             
-          #- run-id: amd64_win
-          #  os: windows-latest
+          - run-id: amd64_win
+            os: windows-latest
             
     runs-on: ${{matrix.os}}
     
@@ -115,6 +115,7 @@ jobs:
           # This allows running processes such as Python and pip directly
           if [[ ${{runner.os}} = Windows ]]; then
             #cmd /c $SAG_INSTALL_PATH/Apama/bin/apama_env.bat
+            echo TODO
           else
             . $_SAG_INSTALL_PATH/Apama/bin/apama_env
             env >> $GITHUB_ENV
