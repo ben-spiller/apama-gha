@@ -59,6 +59,11 @@ jobs:
           #  mkdir --parents ${APAMA_INSTALLER_PATH}
           #  wget --no-verbose -O ${APAMA_INSTALLER_PATH}/apama.zip https://downloads.apamacommunity.com/apama/${WORKFLOW_APAMA_VERSION}/apama_${WORKFLOW_APAMA_VERSION}_${{ matrix.run-id }}.zip
           #fi
+          
+          echo runner.temp=${{ runner.temp }}
+          echo PATH=$PATH
+          echo GH env:
+          cat GITHUB_ENV
 
           # We cache the zip not the unzipped dir, since caching the unpacked dir is currently slower than unpacking it each time
           echo pwd:
@@ -141,7 +146,7 @@ jobs:
         shell: bash
         run: |
           #. $APAMA_HOME/bin/apama_env
-          #mkdir __build
+          mkdir --parents __build/apamadoc
           #apamadoc __build/apamadoc $APAMA_HOME/samples/epl/simple
       - name: Upload apamadoc to gh-pages
         if: ${{matrix.release-docs}}
