@@ -64,9 +64,9 @@ jobs:
           
           echo PATH=$PATH
           echo LD_PATH=$LD_LIBRARY_PATH
-          echo GH env:
-          cat $GITHUB_ENV
-          cat $GITHUB_PATH
+          #echo GH env:
+          #cat $GITHUB_ENV
+          #cat $GITHUB_PATH
 
           # We cache the zip not the unzipped dir, since caching the unpacked dir is currently slower than unpacking it each time
           echo pwd:
@@ -90,7 +90,7 @@ jobs:
           imageFile=$APAMA_INSTALLER_PATH/data/SAGImage.zip
           EOF
           
-          ${APAMA_INSTALLER_PATH}/install -readScript $HOME/apama-installer-script.txt
+          #${APAMA_INSTALLER_PATH}/install -readScript $HOME/apama-installer-script.txt
           
           # Once installed, copy the most important env vars into the workflow's env for later steps
           # This allows running processes such as Python and pip directly
