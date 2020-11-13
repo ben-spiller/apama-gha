@@ -52,7 +52,8 @@ jobs:
       - name: Install Apama
         shell: bash
         run: |
-          APAMA_INSTALLER_PATH=${{ runner.temp }}/apama-installer
+          APAMA_INSTALLER_PATH=`sed 's/\\/\//g' ${{ runner.temp }}`/apama-installer
+          echo installer path=$APAMA_INSTALLER_PATH
           
           #if [[ ! -f ${APAMA_INSTALLER_PATH}/apama.zip ]]; then
           #  echo Downloading Apama community edition - not yet in the local cache
@@ -62,8 +63,10 @@ jobs:
           
           echo runner.temp=${{ runner.temp }}
           echo PATH=$PATH
+          echo LD_PATH=$LD_LIBRARY_PATH
           echo GH env:
-          cat GITHUB_ENV
+          cat $GITHUB_ENV
+          cat $GITHUB_PATH
 
           # We cache the zip not the unzipped dir, since caching the unpacked dir is currently slower than unpacking it each time
           echo pwd:
