@@ -53,7 +53,7 @@ jobs:
         shell: bash
         run: |
           APAMA_INSTALLER_PATH=$GITHUB_WORKSPACE/apama-installer
-          env
+          env | sort
           echo installer path=$APAMA_INSTALLER_PATH
           
           #if [[ ! -f ${APAMA_INSTALLER_PATH}/apama.zip ]]; then
@@ -90,7 +90,13 @@ jobs:
           imageFile=$APAMA_INSTALLER_PATH/data/SAGImage.zip
           EOF
           
-          #${APAMA_INSTALLER_PATH}/install -readScript $HOME/apama-installer-script.txt
+          ${APAMA_INSTALLER_PATH}/install -readScript $HOME/apama-installer-script.txt
+
+          if [[ ${{runner.os}}=windows ]]; then
+					  echo This is windows!
+          elif
+					  echo This is not Windows !
+          fi
           
           # Once installed, copy the most important env vars into the workflow's env for later steps
           # This allows running processes such as Python and pip directly
@@ -99,6 +105,14 @@ jobs:
           echo "$PATH" >> $GITHUB_PATH
           #echo "$LD_LIBRARY_PATH" >> $GITHUB_PATH
       - uses: actions/checkout@v2
+
+      - name: LOGIT
+        shell: bash
+        run: |
+          echo GH path:
+          cat $GITHUB_ENV
+          echo GH env:
+          cat $GITHUB_PATH
 
       - name: Build project
         shell: bash
