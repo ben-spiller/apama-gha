@@ -92,6 +92,10 @@ jobs:
         shell: bash
         if: steps.cache-apama-installer.outputs.cache-hit == 'true'
         run: |
+          pwd
+          ls 
+          ls ~
+          
           if [[ ${{runner.os}} = Windows ]]; then
             _SAG_INSTALL_PATH=c:\\SoftwareAG
           else
@@ -102,7 +106,7 @@ jobs:
           
           mkdir $_SAG_INSTALL_PATH
           cd $_SAG_INSTALL_PATH
-          unzip -q ~/apama-installation.zip
+          unzip -q ~/cached-apama-installation.zip
           
           ls $_SAG_INSTALL_PATH/Apama > /dev/null
 
