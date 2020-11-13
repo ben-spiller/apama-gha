@@ -27,8 +27,8 @@ jobs:
             os: ubuntu-latest
             release-docs: true
             
-          - run-id: amd64_win
-            os: windows-latest
+          #- run-id: amd64_win
+          #  os: windows-latest
             
     runs-on: ${{matrix.os}}
     
@@ -48,7 +48,7 @@ jobs:
         if: steps.cache-apama-installer.outputs.cache-hit != 'true'
         with:
            file-url: 'https://downloads.apamacommunity.com/apama/${{ env.WORKFLOW_APAMA_VERSION }}/apama_${{ env.WORKFLOW_APAMA_VERSION }}_${{ matrix.run-id }}.zip'
-           file-name: apama-installer.zip
+           file-name: ~/apama-installer.zip
 
       - name: Install Apama
         shell: bash
