@@ -41,7 +41,7 @@ jobs:
         id: cache-apama-installer
         with:
             path: ~/cached-apama-installation.tar
-            key: apama-installation-${{ matrix.run-id }}-${{ env.WORKFLOW_APAMA_VERSION }}-x-tar
+            key: apama-installation-${{ matrix.run-id }}-${{ env.WORKFLOW_APAMA_VERSION }}-tar-TODO
 
       - name: Download Apama
         uses: carlosperate/download-file-action@v1.0.3
@@ -126,8 +126,8 @@ jobs:
           echo _SAG_INSTALL_PATH = $_SAG_INSTALL_PATH
           ls $_SAG_INSTALL_PATH
           
-          # Once installed, copy the most important env vars into the workflow's env for later steps
-          # This allows running processes such as Python and pip directly
+          # Once installed, copy the entire apama environment into the GH Actions env so it can be used in any type of 
+          # shell (bash/cmd/PS etc). We also set an extra env var APAMA_PYSYS so user can run pysys from any shell. 
           if [[ ${{runner.os}} = Windows ]]; then
             cmd.exe /c "$_SAG_INSTALL_PATH/Apama/bin/apama_env.bat && set > apama.env"
             echo "APAMA_PYSYS=pysys.cmd" >> $GITHUB_ENV
@@ -136,16 +136,10 @@ jobs:
             env | sort >> apama.env
             echo "APAMA_PYSYS=pysys" >> $GITHUB_ENV
           fi
-
-          #echo Got:
-          #cat apama.env
-
-          #echo "$PATH" >> $GITHUB_PATH
-          cat apama.env >> $GITHUB_ENV
+          # Until Apama 10.7 we need to explicitly enable it
+          echo PYSYS_COLOR=true >> $GITHUB_ENV
           
-          #echo "APAMA_HOME=$APAMA_HOME" >> $GITHUB_ENV
-          #echo "$PATH" >> $GITHUB_PATH
-          #echo "$LD_LIBRARY_PATH" >> $GITHUB_PATH
+          cat apama.env >> $GITHUB_ENV
 
       - uses: actions/checkout@v2
 
@@ -173,10 +167,7 @@ jobs:
         shell: bash
         id: pysys
         run: |
-          # TODO: add ci option, remove absolute path and modernize code coverage approach once we're on 10.7
-          # TODO: add equivalent of --ci e.g. all modes, purge, failures only
-          # TODO: PYSYS_COLOR=true 
-          PYSYS_COLOR=true $APAMA_PYSYS run --outdir=`pwd`/${{matrix.run-id}} -Xeplcoverage --threads=auto
+          $APAMA_PYSYS run --threads=auto --record --purge --printLogs=ALL -Xeplcoverage -XcodeCoverage --mode=ALL --outdir=`pwd`/__pysys_output/${{matrix.run-id}} 
 
       #- name: Upload code coverage
       #  uses: codecov/codecov-action@v1
@@ -192,7 +183,6 @@ jobs:
       #  uses: actions/upload-artifact@v2
       #  # Only do this if some performance results were generated
       #  if: always() && steps.pysys.outputs.artifact_CSVPerformanceReport
-
       #  with:
       #    name: pysys_performance_${{matrix.test-run-id}}
       #    path: ${{ steps.pysys.outputs.artifact_CSVPerformanceReport }}
@@ -210,7 +200,6 @@ jobs:
       - name: Build apamadoc
         shell: bash
         run: |
-          #. $APAMA_HOME/bin/apama_env
           mkdir --parents __build/apamadoc
           apamadoc __build/apamadoc $APAMA_HOME/samples/epl/simple
      
