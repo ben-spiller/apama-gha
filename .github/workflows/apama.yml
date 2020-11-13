@@ -44,18 +44,19 @@ jobs:
 
       - name: Download Apama
         uses: carlosperate/download-file-action@v1.0.3
+        id: download-apama
         if: steps.cache-apama-installer.outputs.cache-hit != 'true'
         with:
            file-url: 'https://downloads.apamacommunity.com/apama/${{ env.WORKFLOW_APAMA_VERSION }}/apama_${{ env.WORKFLOW_APAMA_VERSION }}_${{ matrix.run-id }}.zip'
            file-name: apama-installer.zip
-           location: ~/apama-installer
 
       - name: Install Apama
         shell: bash
         if: steps.cache-apama-installer.outputs.cache-hit != 'true'
         run: |
+          mkdir ~/apama-installer
           cd ~/apama-installer
-          unzip -q ~/apama-installation.zip
+          unzip -q ${{ steps.download-apama.outputs.file-path }}
           mv apama_*/* ./
           
           if [[ ${{runner.os}} = Windows ]]; then
