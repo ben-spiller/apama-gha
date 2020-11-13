@@ -81,16 +81,13 @@ jobs:
           
           ./install -readScript apama-installer-script.txt -console -scriptErrorInteract no
           
-          # Check it was installed
-          ls $_SAG_INSTALL_PATH/Apama > /dev/null
+          # Double-check that it was installed
+          ls $_SAG_INSTALL_PATH/Apama/bin > /dev/null
           
           # Archive a pristine copy of the installation for the cache
           cd $_SAG_INSTALL_PATH
           zip -rq ~/cached-apama-installation.zip *
           
-          popd
-
-
       - name: Unpack cached Apama installation
         shell: bash
         if: steps.cache-apama-installer.outputs.cache-hit == 'true'
@@ -114,16 +111,17 @@ jobs:
         shell: bash
         run: |
           echo _SAG_INSTALL_PATH = $_SAG_INSTALL_PATH
+          ls $_SAG_INSTALL_PATH
           # Once installed, copy the most important env vars into the workflow's env for later steps
           # This allows running processes such as Python and pip directly
-          if [[ ${{runner.os}} = Windows ]]; then
-            cmd /c $SAG_INSTALL_PATH/Apama/bin/apama_env.bat
-          else
-            . $_SAG_INSTALL_PATH/Apama/bin/apama_env
-          fi
+          #if [[ ${{runner.os}} = Windows ]]; then
+          #  cmd /c $SAG_INSTALL_PATH/Apama/bin/apama_env.bat
+          #else
+          #  . $_SAG_INSTALL_PATH/Apama/bin/apama_env
+          #fi
           
-          echo "APAMA_HOME=$APAMA_HOME" >> $GITHUB_ENV
-          echo "$PATH" >> $GITHUB_PATH
+          #echo "APAMA_HOME=$APAMA_HOME" >> $GITHUB_ENV
+          #echo "$PATH" >> $GITHUB_PATH
           #echo "$LD_LIBRARY_PATH" >> $GITHUB_PATH
 
       - uses: actions/checkout@v2
