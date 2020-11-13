@@ -93,9 +93,9 @@ jobs:
           ${APAMA_INSTALLER_PATH}/install -readScript $HOME/apama-installer-script.txt
 
           if [[ ${{runner.os}}=windows ]]; then
-					  echo This is windows!
+            echo This is windows!
           elif
-					  echo This is not Windows !
+            echo This is not Windows !
           fi
           
           # Once installed, copy the most important env vars into the workflow's env for later steps
