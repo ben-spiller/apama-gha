@@ -90,8 +90,9 @@ jobs:
           imageFile=$APAMA_INSTALLER_PATH/data/SAGImage.zip
           EOF
           
-          ${APAMA_INSTALLER_PATH}/install -readScript $HOME/apama-installer-script.txt
-
+          echo Running installer:
+          ${APAMA_INSTALLER_PATH}/install -readScript $HOME/apama-installer-script.txt -console -scriptErrorInteract no
+          
           if [[ ${{runner.os}}=windows ]]; then
             echo This is windows!
           elif
