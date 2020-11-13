@@ -1,7 +1,10 @@
 # This workflow installs Apama Community Edition and uses it to run PySys tests for your application
 
+# Python 3 and Java JDK 8 are shipped with Apama (and added to PATH by this workflow) so there is no need to install them separately. 
+
 # Using this workflow implies that you have agreed to the terms of the Software AG license agreement - see http://www.apamacommunity.com/terms-conditions/
-# You also agree that you will not commit any Apama license file you may have to a public repository. 
+# This workflow can be used without a commercial license of Apama. If you do have a commercial Apama license you hereby 
+# agree not to commit the license file to any repository or location that can be accessed outside your organization. 
 
 name: PySys
 
@@ -37,7 +40,7 @@ jobs:
       # Install the full Apama Community Edition. This contains useful tools such as apamadoc/apama_project 
       # which are not in the smaller "core" package
       - name: Get Apama installation from cache
-        uses: actions/cache@v2.1.3
+        uses: actions/cache@v2.1.0
         id: cache-apama-installer
         with:
             path: ~/cached-apama-installation.tar
@@ -131,6 +134,10 @@ jobs:
           if [[ ${{runner.os}} = Windows ]]; then
             cmd.exe /c "$_SAG_INSTALL_PATH/Apama/bin/apama_env.bat && set > apama.env"
             echo "APAMA_PYSYS=pysys.cmd" >> $GITHUB_ENV
+            
+            # TODO:
+            echo ~/cached-apama-installation.tar is:
+            cygpath --posix ~/cached-apama-installation.tar
           else
             . $_SAG_INSTALL_PATH/Apama/bin/apama_env
             env | sort >> apama.env
