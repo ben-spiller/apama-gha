@@ -92,6 +92,10 @@ jobs:
           cd $_SAG_INSTALL_PATH
           tar -cf ~/cached-apama-installation.tar *
           
+          echo TODO - contents of ~ are:
+          ls ~
+          echo ---
+          
       - name: Unpack cached Apama installation
         shell: bash
         if: steps.cache-apama-installer.outputs.cache-hit == 'true'
@@ -113,10 +117,15 @@ jobs:
       - name: Setup Apama environment
         shell: bash
         run: |
-          env | sort
+          echo Current dir is:
+          pwd
+          echo Contents of ~:
+          ls ~
+          #env | sort
           echo ---
           echo _SAG_INSTALL_PATH = $_SAG_INSTALL_PATH
           ls $_SAG_INSTALL_PATH
+          
           # Once installed, copy the most important env vars into the workflow's env for later steps
           # This allows running processes such as Python and pip directly
           if [[ ${{runner.os}} = Windows ]]; then
@@ -125,11 +134,11 @@ jobs:
           else
             . $_SAG_INSTALL_PATH/Apama/bin/apama_env
             env | sort >> apama.env
-            echo "APAMA_PYSYS=PYSYS_COLOR=true pysys" >> $GITHUB_ENV
+            echo "APAMA_PYSYS=pysys" >> $GITHUB_ENV
           fi
 
-          echo Got:
-          cat apama.env
+          #echo Got:
+          #cat apama.env
 
           #echo "$PATH" >> $GITHUB_PATH
           cat apama.env >> $GITHUB_ENV
@@ -166,7 +175,8 @@ jobs:
         run: |
           # TODO: add ci option, remove absolute path and modernize code coverage approach once we're on 10.7
           # TODO: add equivalent of --ci e.g. all modes, purge, failures only
-          echo PYSYS_COLOR=true $APAMA_PYSYS run --outdir=`pwd`/${{matrix.run-id}} -Xeplcoverage --threads=auto
+          # TODO: PYSYS_COLOR=true 
+          $APAMA_PYSYS run --outdir=`pwd`/${{matrix.run-id}} -Xeplcoverage --threads=auto
 
       #- name: Upload code coverage
       #  uses: codecov/codecov-action@v1
