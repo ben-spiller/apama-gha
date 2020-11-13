@@ -79,7 +79,7 @@ jobs:
             APAMA_INSTALL_DIR=c:\\\\SoftwareAG
           else
             echo This is not Windows !
-            APAMA_INSTALL_DIR=/opt/SoftwareAG
+            APAMA_INSTALL_DIR=/opt/softwareag
           fi
           
           
@@ -87,10 +87,12 @@ jobs:
           LicenseAgree=Accept
           InstallProducts=e2ei/11/.latest/Apama/PAMServer
           PAM.Work.Directory.ID=__VERSION1__,$APAMA_INSTALL_DIR/apama-work
-          InstallDir=$HOME/softwareag
+          InstallDir=$APAMA_INSTALL_DIR
           sagInstallerLogFile=softwareag-installer.log
           imageFile=data/SAGImage.zip
           EOF
+          
+          cat apama-installer-script.txt
           
           echo Running installer:
           ${APAMA_INSTALLER_PATH}/install -readScript apama-installer-script.txt -console -scriptErrorInteract no
