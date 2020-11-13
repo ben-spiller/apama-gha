@@ -92,10 +92,6 @@ jobs:
         shell: bash
         if: steps.cache-apama-installer.outputs.cache-hit == 'true'
         run: |
-          pwd
-          ls 
-          ls ~
-          
           if [[ ${{runner.os}} = Windows ]]; then
             _SAG_INSTALL_PATH=c:\\SoftwareAG
           else
@@ -117,11 +113,13 @@ jobs:
           ls $_SAG_INSTALL_PATH
           # Once installed, copy the most important env vars into the workflow's env for later steps
           # This allows running processes such as Python and pip directly
-          #if [[ ${{runner.os}} = Windows ]]; then
-          #  cmd /c $SAG_INSTALL_PATH/Apama/bin/apama_env.bat
-          #else
-          #  . $_SAG_INSTALL_PATH/Apama/bin/apama_env
-          #fi
+          if [[ ${{runner.os}} = Windows ]]; then
+            #cmd /c $SAG_INSTALL_PATH/Apama/bin/apama_env.bat
+          else
+            . $_SAG_INSTALL_PATH/Apama/bin/apama_env
+            env >> $GITHUB_ENV
+            echo "$PATH" >> $GITHUB_PATH
+          fi
           
           #echo "APAMA_HOME=$APAMA_HOME" >> $GITHUB_ENV
           #echo "$PATH" >> $GITHUB_PATH
@@ -142,7 +140,7 @@ jobs:
         run: |
           echo TODO
           # . $APAMA_HOME/bin/apama_env
-          #ant
+          ant
 
       - name: PySys tests
         working-directory: test
