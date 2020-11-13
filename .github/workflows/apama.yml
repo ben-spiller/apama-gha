@@ -48,21 +48,18 @@ jobs:
         if: steps.cache-apama-installer.outputs.cache-hit != 'true'
         with:
            file-url: 'https://downloads.apamacommunity.com/apama/${{ env.WORKFLOW_APAMA_VERSION }}/apama_${{ env.WORKFLOW_APAMA_VERSION }}_${{ matrix.run-id }}.zip'
-           file-name: apama-installer.zip
-           location: ${{ env.HOME }}
+           file-name: /tmp/apama-installer.zip
 
       - name: Install Apama
         shell: bash
         if: steps.cache-apama-installer.outputs.cache-hit != 'true'
         run: |
-          mkdir ~/apama-installer
-          cd ~/apama-installer
+          cd /tmp/apama-installer
           unzip -q ${{ steps.download-apama.outputs.file-path }}
           mv apama_*/* ./
           
           if [[ ${{runner.os}} = Windows ]]; then
             _SAG_INSTALL_PATH=c:\\SoftwareAG
-          fi
           else
             _SAG_INSTALL_PATH=/opt/softwareag
           fi
