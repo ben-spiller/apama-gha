@@ -111,18 +111,24 @@ jobs:
       - name: Setup Apama environment
         shell: bash
         run: |
+          env | sort
+          echo ---
           echo _SAG_INSTALL_PATH = $_SAG_INSTALL_PATH
           ls $_SAG_INSTALL_PATH
           # Once installed, copy the most important env vars into the workflow's env for later steps
           # This allows running processes such as Python and pip directly
           if [[ ${{runner.os}} = Windows ]]; then
-            #cmd /c $SAG_INSTALL_PATH/Apama/bin/apama_env.bat
-            echo TODO
+            cmd.exe /c "$_SAG_INSTALL_PATH/Apama/bin/apama_env.bat && set > apama.env"
           else
             . $_SAG_INSTALL_PATH/Apama/bin/apama_env
-            env >> $GITHUB_ENV
-            echo "$PATH" >> $GITHUB_PATH
+            env | sort >> apama.env
           fi
+
+          echo Got:
+          cat apama.env
+
+          echo "$PATH" >> $GITHUB_PATH
+          cat apama.env >> $GITHUB_ENV
           
           #echo "APAMA_HOME=$APAMA_HOME" >> $GITHUB_ENV
           #echo "$PATH" >> $GITHUB_PATH
@@ -133,6 +139,7 @@ jobs:
       - name: LOGIT
         shell: bash
         run: |
+          env | sort
           echo GH path:
           cat $GITHUB_ENV
           echo GH env:
