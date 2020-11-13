@@ -44,7 +44,8 @@ jobs:
         id: cache-apama-installer
         with:
             path: ~/cached-apama-installation.tar
-            key: apama-installation-${{ matrix.run-id }}-${{ env.WORKFLOW_APAMA_VERSION }}-tar-TODO
+            # To use a clean cache, add extra chars to this key
+            key: apama-installation-${{ matrix.run-id }}-${{ env.WORKFLOW_APAMA_VERSION }}-tar-TODOx
 
       - name: Download Apama
         uses: carlosperate/download-file-action@v1.0.3
