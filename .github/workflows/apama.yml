@@ -94,12 +94,11 @@ jobs:
         run: |
           if [[ ${{runner.os}} = Windows ]]; then
             _SAG_INSTALL_PATH=c:\\SoftwareAG
-          fi
           else
             _SAG_INSTALL_PATH=/opt/softwareag
           fi
           # Make this available to later steps
-          echo "_SAG_INSTALL_PATH=$SAG_INSTALL_PATH" >> $GITHUB_ENV
+          echo "_SAG_INSTALL_PATH=$_SAG_INSTALL_PATH" >> $GITHUB_ENV
           
           mkdir $_SAG_INSTALL_PATH
           cd $_SAG_INSTALL_PATH
