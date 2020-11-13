@@ -60,7 +60,7 @@ jobs:
           mv apama_*/* ./
           
           if [[ ${{runner.os}} = Windows ]]; then
-            _SAG_INSTALL_PATH=C:\\SoftwareAG\\xxx
+            _SAG_INSTALL_PATH=c:\\SoftwareAG
           else
             _SAG_INSTALL_PATH=/opt/softwareag
           fi
@@ -75,6 +75,8 @@ jobs:
           sagInstallerLogFile=softwareag-installer.log
           imageFile=data/SAGImage.zip
           EOF
+          # Need to escape backslashes as it's effectively a properties file
+          sed -i 's/\\/\\\\/g' apama-installer-script.txt
           
           echo Running installer with script:
           cat apama-installer-script.txt
