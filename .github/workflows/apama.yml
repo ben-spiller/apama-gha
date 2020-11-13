@@ -93,7 +93,7 @@ jobs:
 
       - name: Unpack cached Apama installation
         shell: bash
-        if: steps.cache-apama-installer.outputs.cache-hit = 'true'
+        if: steps.cache-apama-installer.outputs.cache-hit == 'true'
         run: |
           if [[ ${{runner.os}} = Windows ]]; then
             _SAG_INSTALL_PATH=c:\\SoftwareAG
