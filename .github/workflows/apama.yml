@@ -78,7 +78,7 @@ jobs:
           if [[ ${{runner.os}}=windows ]]; then
             echo This is windows!
             APAMA_INSTALL_DIR=c:/SoftwareAG
-          elif
+          else
             echo This is not Windows !
             APAMA_INSTALL_DIR=/opt/SoftwareAG
           fi
