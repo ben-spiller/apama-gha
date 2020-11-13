@@ -137,7 +137,8 @@ jobs:
             
             # TODO:
             echo ~/cached-apama-installation.tar is:
-            cygpath --posix ~/cached-apama-installation.tar
+            cygpath --unix ~/cached-apama-installation.tar
+            cygpath --windows ~/cached-apama-installation.tar
           else
             . $_SAG_INSTALL_PATH/Apama/bin/apama_env
             env | sort >> apama.env
