@@ -71,7 +71,7 @@ jobs:
             _SAG_INSTALL_PATH=/opt/softwareag
           fi
           
-          if [[ ${{ steps.cache-apama-installer.outputs.cache-hit }} = true ]]; then
+          if [[ "${{ steps.cache-apama-installer.outputs.cache-hit }}" = "true" ]]; then
             echo Unpacking Apama installation from cache
             
             mkdir $_SAG_INSTALL_PATH
