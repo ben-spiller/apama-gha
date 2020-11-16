@@ -141,6 +141,12 @@ jobs:
           ant
           cp *.jar $GITHUB_WORKSPACE/src/
 
+      - name: Setup Visual Studio 2015
+        if: matrix.run-id == 'amd64_win'
+        uses: microsoft/setup-msbuild@v1.0.2
+        with:
+          vs-version: '[14.0,15)'
+
       - name: Build C++ plugins
         shell: bash
         run: |
@@ -148,11 +154,17 @@ jobs:
           if [[ ${{runner.os}} = Windows ]]; then
             msbuild.exe /p:platform=x64 correlator_plugin_cpp_api.sln
           else
-            gmake
+            make
           fi
 
           ls
           #cp *.jar $GITHUB_WORKSPACE/src/
+
+      - name: Build Apama project
+        shell: bash
+        run: |
+          apama_project --outputDeployDir __deploydir src
+          ls __deploydir
 
       - name: PySys tests
         working-directory: test
@@ -190,7 +202,7 @@ jobs:
           apamadoc __build/apamadoc $APAMA_HOME/samples/epl/simple
      
       - name: Upload ApamaDoc to gh-pages
-        if: ${{matrix.upload-docs}}
+        if: matrix.upload-docs
         #if: github.event_name == 'release'
         uses: JamesIves/github-pages-deploy-action@3.6.2
         with:
