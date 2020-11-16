@@ -158,7 +158,7 @@ jobs:
         if: matrix.run-id == 'amd64_win'
         run: |
           cd %APAMA_HOME%\samples\correlator_plugin\cpp
-          msbuild.exe correlator_plugin_cpp_api.sln
+          msbuild vsproj\primitives_plugin.vcxproj
 
           dir Release\*
           mkdir %GITHUB_WORKSPACE%\src\lib
