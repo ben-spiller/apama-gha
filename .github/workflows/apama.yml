@@ -47,7 +47,7 @@ jobs:
         with:
             path: ${{ github.workspace }}/../cached-apama-installation.tar
             # To use a clean cache, add extra chars to this key
-            key: apama-installation-${{ matrix.run-id }}-${{ env.WORKFLOW_APAMA_VERSION }}-tar-TODOx5
+            key: apama-installation-${{ matrix.run-id }}-${{ env.WORKFLOW_APAMA_VERSION }}-tar-TODOx6
 
       - name: Download Apama
         uses: carlosperate/download-file-action@v1.0.3
@@ -168,7 +168,7 @@ jobs:
 
         with:
           name: pysys_epl_coverage_${{matrix.run-id}}
-          path: test/__pysys_output/${{matrix.run-id}}/epl_coverage
+          path: test/__pysys_output/${{matrix.run-id}}/eplcoverage
 
       - name: Build ApamaDoc
         shell: bash
