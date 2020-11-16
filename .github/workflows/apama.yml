@@ -49,7 +49,7 @@ jobs:
             # Would prefer to put this in ~/ but doesn't work on Windows currently due to https://github.com/actions/cache/issues/456
             path: ${{ github.workspace }}/cached-apama-installation.tar
             # To use a clean cache, add extra chars to this key
-            key: apama-${{ matrix.run-id }}-${{ env.WORKFLOW_APAMA_VERSION }}-TODOx11
+            key: apama-${{ matrix.run-id }}-${{ env.WORKFLOW_APAMA_VERSION }}-TODOx12
 
       - name: Download Apama
         uses: carlosperate/download-file-action@v1.0.3
@@ -139,13 +139,14 @@ jobs:
         run: |
           cd $APAMA_HOME/samples/correlator_plugin/java
           ant
-          cp *.jar $GITHUB_WORKSPACE/src/
+          mkdir --parents $GITHUB_WORKSPACE/src/lib
+          cp *.jar $GITHUB_WORKSPACE/src/lib/
 
       - name: Setup Visual Studio 2015
         if: matrix.run-id == 'amd64_win'
         uses: microsoft/setup-msbuild@v1.0.2
-        #with:
-        #  vs-version: '[14.0,15)'
+        with:
+          vs-version: '[14,20)'
 
       - name: Build C++ plugins
         shell: bash
@@ -153,12 +154,16 @@ jobs:
           cd $APAMA_HOME/samples/correlator_plugin/cpp
           if [[ ${{runner.os}} = Windows ]]; then
             msbuild.exe /p:platform=x64 correlator_plugin_cpp_api.sln
+
             ls Release/*
-            cp Release/*.dll $GITHUB_WORKSPACE/src/
+            mkdir --parents $GITHUB_WORKSPACE/src/lib
+            cp Release/*.dll Release/*.pdb $GITHUB_WORKSPACE/src/lib/
           else
             make
+
             ls *.so
-            cp lib*.so $GITHUB_WORKSPACE/src/
+            mkdir --parents $GITHUB_WORKSPACE/src/lib
+            cp lib*.so $GITHUB_WORKSPACE/src/lib/
           fi
 
       - name: Deploy Apama project
