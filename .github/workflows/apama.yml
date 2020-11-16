@@ -44,10 +44,10 @@ jobs:
         uses: pat-s/always-upload-cache@v2.1.3
         id: cache-apama-installer
         with:
-            # Would prefer to put this in ~/ but doesn't work on Windows currently
+            # Would prefer to put this in ~/ but doesn't work on Windows currently due to https://github.com/actions/cache/issues/456
             path: ${{ github.workspace }}/cached-apama-installation.tar
             # To use a clean cache, add extra chars to this key
-            key: apama-installation-${{ matrix.run-id }}-${{ env.WORKFLOW_APAMA_VERSION }}-tar-TODOx7
+            key: apama-installation-${{ matrix.run-id }}-${{ env.WORKFLOW_APAMA_VERSION }}-tar-TODOx8
 
       - name: Download Apama
         uses: carlosperate/download-file-action@v1.0.3
@@ -179,7 +179,7 @@ jobs:
           apamadoc __build/apamadoc $APAMA_HOME/samples/epl/simple
      
       - name: Upload ApamaDoc to gh-pages
-        if: ${{ matrix.release-docs }} && success()
+        if: ${{ matrix.release-docs }} == 'true' && success()
         #if: github.event_name == 'release'
         uses: JamesIves/github-pages-deploy-action@3.6.2
         with:
