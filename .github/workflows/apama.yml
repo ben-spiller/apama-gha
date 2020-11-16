@@ -28,7 +28,6 @@ jobs:
         include:
           - run-id: amd64_linux
             os: ubuntu-latest
-            
             release-docs: true
             
           - run-id: amd64_win
@@ -41,7 +40,7 @@ jobs:
       # which are not in the smaller "core" package
       
       - name: Apama installation cache
-        # This fork of actions/cache allows cache to be saved even if some later steps fail
+        # This fork of actions/cache allows cache to be saved even if some later steps (e.g. testing) fail
         uses: pat-s/always-upload-cache@v2.1.3
         id: cache-apama-installer
         with:
@@ -180,7 +179,7 @@ jobs:
           apamadoc __build/apamadoc $APAMA_HOME/samples/epl/simple
      
       - name: Upload ApamaDoc to gh-pages
-        if: ${{matrix.release-docs}} && success()
+        if: ${{ matrix.release-docs }} && success()
         #if: github.event_name == 'release'
         uses: JamesIves/github-pages-deploy-action@3.6.2
         with:
