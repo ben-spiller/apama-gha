@@ -86,16 +86,16 @@ jobs:
             unzip -q apama-installer.zip
             mv apama_*/* ./
             
-            cat > apama-installer-script.txt << EOF
-            LicenseAgree=Accept
-            InstallProducts=e2ei/11/.latest/Apama/PAMServer
-            PAM.Work.Directory.ID=__VERSION1__,$_SAG_INSTALL_PATH/apama-work
-            InstallDir=$_SAG_INSTALL_PATH
-            sagInstallerLogFile=softwareag-installer.log
-            imageFile=data/SAGImage.zip
-            EOF
-            # Need to escape backslashes as it's effectively a properties file
-            sed -i 's/\\/\\\\/g' apama-installer-script.txt
+          cat > apama-installer-script.txt << EOF
+          LicenseAgree=Accept
+          InstallProducts=e2ei/11/.latest/Apama/PAMServer
+          PAM.Work.Directory.ID=__VERSION1__,$_SAG_INSTALL_PATH/apama-work
+          InstallDir=$_SAG_INSTALL_PATH
+          sagInstallerLogFile=softwareag-installer.log
+          imageFile=data/SAGImage.zip
+          EOF
+          # Need to escape backslashes as it's effectively a properties file
+          sed -i 's/\\/\\\\/g' apama-installer-script.txt
             
             echo Running installer with script:
             cat apama-installer-script.txt
