@@ -26,9 +26,9 @@ jobs:
       
       matrix:
         include:
-          - run-id: amd64_linux
-            os: ubuntu-latest
-            upload-docs: true
+          #- run-id: amd64_linux
+          #  os: ubuntu-latest
+          #  upload-docs: true
             
           - run-id: amd64_win
             os: windows-latest
@@ -49,7 +49,7 @@ jobs:
             # Would prefer to put this in ~/ but doesn't work on Windows currently due to https://github.com/actions/cache/issues/456
             path: ${{ github.workspace }}/cached-apama-installation.tar
             # To use a clean cache, add extra chars to this key
-            key: apama-${{ matrix.run-id }}-${{ env.WORKFLOW_APAMA_VERSION }}-TODOx13
+            key: apama-${{ matrix.run-id }}-${{ env.WORKFLOW_APAMA_VERSION }}-TODOx14
 
       - name: OTHER cache
         # This fork of actions/cache allows cache to be saved even if some later steps (e.g. testing) fail
@@ -59,7 +59,7 @@ jobs:
             # Would prefer to put this in ~/ but doesn't work on Windows currently due to https://github.com/actions/cache/issues/456
             path: ${{ github.workspace }}/cached-apama-installation.foo
             # To use a clean cache, add extra chars to this key
-            key: apama-${{ matrix.run-id }}-${{ env.WORKFLOW_APAMA_VERSION }}-TODOy13
+            key: apama-${{ matrix.run-id }}-${{ env.WORKFLOW_APAMA_VERSION }}-TODOy14
 
       - name: Download Apama
         uses: carlosperate/download-file-action@v1.0.3
@@ -147,7 +147,7 @@ jobs:
           
           cat apama.env >> $GITHUB_ENV
 
-      - name: Setup Visual Studio 2015
+      - name: Setup Visual Studio
         if: matrix.run-id == 'amd64_win'
         uses: microsoft/setup-msbuild@v1.0.2
         with:
@@ -158,7 +158,8 @@ jobs:
         if: matrix.run-id == 'amd64_win'
         run: |
           cd %APAMA_HOME%\samples\correlator_plugin\cpp
-          msbuild vsproj\primitives_plugin.vcxproj
+          dir
+          msbuild vsproj\primitives_plugin.vcxproj /verbosity:diag
 
           dir Release\*
           mkdir %GITHUB_WORKSPACE%\src\lib
