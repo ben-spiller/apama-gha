@@ -134,15 +134,12 @@ jobs:
           
           cat apama.env >> $GITHUB_ENV
 
-      - name: Build project
+      - name: Build Java plugins
         shell: bash
         run: |
-          echo upload docs: ${{ matrix.upload-docs }}
-          echo TODO
-          pwd
-          ls
-          # . $APAMA_HOME/bin/apama_env
-          #ant
+          cd $APAMA_HOME/samples/correlator_plugin/java
+          ant
+          cp *.jar $GITHUB_WORKSPACE/src/
 
       - name: PySys tests
         working-directory: test
