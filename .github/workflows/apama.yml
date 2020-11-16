@@ -147,14 +147,6 @@ jobs:
           
           cat apama.env >> $GITHUB_ENV
 
-      - name: Build Java plugins
-        shell: bash
-        run: |
-          cd $APAMA_HOME/samples/correlator_plugin/java
-          ant
-          mkdir --parents $GITHUB_WORKSPACE/src/lib
-          cp *.jar $GITHUB_WORKSPACE/src/lib/
-
       - name: Setup Visual Studio 2015
         if: matrix.run-id == 'amd64_win'
         uses: microsoft/setup-msbuild@v1.0.2
@@ -166,7 +158,7 @@ jobs:
         if: matrix.run-id == 'amd64_win'
         run: |
           cd %APAMA_HOME%\samples\correlator_plugin\cpp
-          msbuild.exe /p:platform=x64 correlator_plugin_cpp_api.sln
+          msbuild.exe correlator_plugin_cpp_api.sln
 
           dir Release\*
           mkdir %GITHUB_WORKSPACE%\src\lib
@@ -181,6 +173,14 @@ jobs:
           ls *.so
           mkdir --parents $GITHUB_WORKSPACE/src/lib
           cp lib*.so $GITHUB_WORKSPACE/src/lib/
+
+      - name: Build Java plugins
+        shell: bash
+        run: |
+          cd $APAMA_HOME/samples/correlator_plugin/java
+          ant
+          mkdir --parents $GITHUB_WORKSPACE/src/lib
+          cp *.jar $GITHUB_WORKSPACE/src/lib/
 
       - name: Deploy Apama project
         shell: bash
