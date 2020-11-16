@@ -54,7 +54,7 @@ jobs:
       - name: OTHER cache
         # This fork of actions/cache allows cache to be saved even if some later steps (e.g. testing) fail
         uses: pat-s/always-upload-cache@v2.1.3
-        id: cache-apama-installer
+        id: cache-apama-installer-foo
         with:
             # Would prefer to put this in ~/ but doesn't work on Windows currently due to https://github.com/actions/cache/issues/456
             path: ${{ github.workspace }}/cached-apama-installation.foo
