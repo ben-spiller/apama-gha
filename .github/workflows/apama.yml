@@ -46,7 +46,7 @@ jobs:
         id: cache-apama-installer
         with:
             # Would prefer to put this in ~/ but doesn't work on Windows currently due to https://github.com/actions/cache/issues/456
-            path: ${{ github.workspace }}/cached-apama-installation.tar
+            path: ~/cached-apama-installation.tar
             # To use a clean cache, add extra chars to this key
             key: apama-${{ matrix.run-id }}-${{ env.WORKFLOW_APAMA_VERSION }}-TODOx8
 
@@ -62,7 +62,7 @@ jobs:
       - name: Install Apama
         shell: bash
         run: |
-          APAMA_CACHE_TAR=`pwd`/cached-apama-installation.tar
+          APAMA_CACHE_TAR=~/cached-apama-installation.tar
           echo Cache location: $APAMA_CACHE_TAR
 
           if [[ ${{runner.os}} = Windows ]]; then
@@ -181,7 +181,7 @@ jobs:
           apamadoc __build/apamadoc $APAMA_HOME/samples/epl/simple
      
       - name: Upload ApamaDoc to gh-pages
-        if: ${{ matrix.upload-docs }} == 'true'
+        if: ${{matrix.upload-docs}}
         #if: github.event_name == 'release'
         uses: JamesIves/github-pages-deploy-action@3.6.2
         with:
