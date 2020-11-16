@@ -36,5 +36,5 @@ class PySysTest(pysys.basetest.BaseTest):
 	def validate(self):
 		# Best practice is to always check for errors in the the correlator log file (you can add ignores for any 
 		# that you are expecting)
-		self.assertGrep('testCorrelatorX.log', expr=' (ERROR|FATAL|Failed to parse) .*', contains=False, ignores=[])
+		self.assertGrep('testCorrelator.log', expr=' (ERROR|FATAL|Failed to parse) .*', contains=False, ignores=[])
 
