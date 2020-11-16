@@ -37,8 +37,6 @@ jobs:
     runs-on: ${{matrix.os}}
     
     steps:
-      # TODO: maybe use https://github.com/ktmud/cached-dependencies ?
-    
       # Install the full Apama Community Edition. This contains useful tools such as apamadoc/apama_project 
       # which are not in the smaller "core" package
       
