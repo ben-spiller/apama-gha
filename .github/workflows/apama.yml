@@ -120,33 +120,19 @@ jobs:
           if [[ ${{runner.os}} = Windows ]]; then
             cmd.exe /c "$_SAG_INSTALL_PATH/Apama/bin/apama_env.bat && set > apama.env"
             echo "APAMA_PYSYS=pysys.cmd" >> $GITHUB_ENV
-            
-            # TODO:
-            echo ~/cached-apama-installation.tar is:
-            cygpath --unix ~/cached-apama-installation.tar
-            cygpath --windows ~/cached-apama-installation.tar
           else
             . $_SAG_INSTALL_PATH/Apama/bin/apama_env
             env | sort >> apama.env
             echo "APAMA_PYSYS=pysys" >> $GITHUB_ENV
           fi
           
-          # Until Apama 10.7 we need to explicitly enable it
+          # Until Apama 10.7 we need to explicitly enable it (and disable colorama on windows which would replace the escape codes)
           echo PYSYS_COLOR=true >> $GITHUB_ENV
+          echo PYSYS_DISABLE_COLORAMA=true >> $GITHUB_ENV
           
           cat apama.env >> $GITHUB_ENV
 
       - uses: actions/checkout@v2
-
-      - name: LOGIT
-        shell: bash
-        run: |
-          env | sort
-          echo GH path:
-          cat $GITHUB_ENV
-          echo GH env:
-          cat $GITHUB_PATH
-          cat
 
       - name: Build project
         shell: bash
