@@ -47,7 +47,7 @@ jobs:
         with:
             path: ${{ github.workspace }}/../cached-apama-installation.tar
             # To use a clean cache, add extra chars to this key
-            key: apama-installation-${{ matrix.run-id }}-${{ env.WORKFLOW_APAMA_VERSION }}-tar-TODOx4
+            key: apama-installation-${{ matrix.run-id }}-${{ env.WORKFLOW_APAMA_VERSION }}-tar-TODOx5
 
       - name: Download Apama
         uses: carlosperate/download-file-action@v1.0.3
@@ -66,7 +66,6 @@ jobs:
 
           if [[ ${{runner.os}} = Windows ]]; then
             _SAG_INSTALL_PATH=c:\\SoftwareAG
-            APAMA_CACHE_TAR=`cygpath --unix $APAMA_CACHE_TAR`
           else
             _SAG_INSTALL_PATH=/opt/softwareag
           fi
