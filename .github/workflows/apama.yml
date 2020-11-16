@@ -157,7 +157,10 @@ jobs:
         shell: cmd
         if: matrix.run-id == 'amd64_win'
         run: |
+          set foo=bar
+          echo got: %foo% in %cd%
           cd %APAMA_HOME%\samples\correlator_plugin\cpp
+          echo got: %foo% in %cd%
           dir
           msbuild vsproj\primitives_plugin.vcxproj /verbosity:diag
 
