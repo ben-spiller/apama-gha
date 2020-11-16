@@ -150,26 +150,10 @@ jobs:
         run: |
           $APAMA_PYSYS run --threads=auto --record --purge --printLogs=ALL -Xeplcoverage -XcodeCoverage --mode=ALL --outdir=`pwd`/__pysys_output/${{matrix.run-id}} 
 
-      #- name: Upload code coverage
-      #  uses: codecov/codecov-action@v1
-      #  if: steps.pysys.outputs.artifact_EPLCoverageDir
-      #  with:
-      #    file: ${{ steps.pysys.outputs.artifact_EPLCoverageDir }}/epl_coverage.xml
-        
       # If any tests fail, PySys will return an error code, so we need "if: always()" so the following steps will run
       # Since we expect failures only from the cookbook sample, that's the one we upload artifacts for (using id=pysys)
       # The follow lines are a copy from the sample pysys workflow
 
-      #- name: Upload performance CSV artifacts
-      #  uses: actions/upload-artifact@v2
-      #  # Only do this if some performance results were generated
-      #  if: always() && steps.pysys.outputs.artifact_CSVPerformanceReport
-      #  with:
-      #    name: pysys_performance_${{matrix.test-run-id}}
-      #    path: ${{ steps.pysys.outputs.artifact_CSVPerformanceReport }}
-
-      # TODO: could also upload epl code coverage (in 10.7.1 this will be easier due to epl_coverage.xml) 
-      
       - name: Upload archive artifacts for any test failures
         uses: actions/upload-artifact@v2
         if: failure()
@@ -178,14 +162,23 @@ jobs:
           name: pysys_output_${{matrix.run-id}}
           path: test/__pysys_output/${{matrix.run-id}}
 
-      - name: Build apamadoc
+      - name: Upload EPL code coverage report
+        uses: actions/upload-artifact@v2
+        if: success()
+
+        with:
+          name: pysys_epl_coverage_${{matrix.run-id}}
+          path: test/__pysys_output/${{matrix.run-id}}/epl_coverage
+
+      - name: Build ApamaDoc
         shell: bash
+        if: always()
         run: |
           mkdir --parents __build/apamadoc
           apamadoc __build/apamadoc $APAMA_HOME/samples/epl/simple
      
-      - name: Upload apamadoc to gh-pages
-        if: ${{matrix.release-docs}}
+      - name: Upload ApamaDoc to gh-pages
+        if: ${{matrix.release-docs}} && success()
         #if: github.event_name == 'release'
         uses: JamesIves/github-pages-deploy-action@3.6.2
         with:
