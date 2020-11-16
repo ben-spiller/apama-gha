@@ -179,7 +179,7 @@ jobs:
           apamadoc __build/apamadoc $APAMA_HOME/samples/epl/simple
      
       - name: Upload ApamaDoc to gh-pages
-        if: ${{ matrix.release-docs }} == 'true' && success()
+        if: ${{ matrix.release-docs }} == 'true'
         #if: github.event_name == 'release'
         uses: JamesIves/github-pages-deploy-action@3.6.2
         with:
