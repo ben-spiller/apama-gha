@@ -37,10 +37,14 @@ jobs:
     runs-on: ${{matrix.os}}
     
     steps:
+      # TODO: maybe use https://github.com/ktmud/cached-dependencies ?
+    
       # Install the full Apama Community Edition. This contains useful tools such as apamadoc/apama_project 
       # which are not in the smaller "core" package
-      - name: Get Apama installation from cache
-        uses: actions/cache@v2.1.0
+      
+      - name: Apama installation cache
+        # This fork of actions/cache allows cache to be saved even if some later steps fail
+        uses: pat-s/always-upload-cache@v2.1.3
         id: cache-apama-installer
         with:
             path: ~/cached-apama-installation.tar
@@ -58,78 +62,60 @@ jobs:
 
       - name: Install Apama
         shell: bash
-        if: steps.cache-apama-installer.outputs.cache-hit != 'true'
         run: |
-          cd ../apama-installer
-          unzip -q apama-installer.zip
-          mv apama_*/* ./
+          echo Got: ${{ steps.cache-apama-installer.outputs.cache-hit }}
           
           if [[ ${{runner.os}} = Windows ]]; then
             _SAG_INSTALL_PATH=c:\\SoftwareAG
           else
             _SAG_INSTALL_PATH=/opt/softwareag
           fi
-          # Make this available to later steps
-          echo "_SAG_INSTALL_PATH=$_SAG_INSTALL_PATH" >> $GITHUB_ENV
           
-          cat > apama-installer-script.txt << EOF
-          LicenseAgree=Accept
-          InstallProducts=e2ei/11/.latest/Apama/PAMServer
-          PAM.Work.Directory.ID=__VERSION1__,$_SAG_INSTALL_PATH/apama-work
-          InstallDir=$_SAG_INSTALL_PATH
-          sagInstallerLogFile=softwareag-installer.log
-          imageFile=data/SAGImage.zip
-          EOF
-          # Need to escape backslashes as it's effectively a properties file
-          sed -i 's/\\/\\\\/g' apama-installer-script.txt
-          
-          echo Running installer with script:
-          cat apama-installer-script.txt
-          
-          ./install -readScript apama-installer-script.txt -console -scriptErrorInteract no
-          
-          # Double-check that it was installed
-          ls $_SAG_INSTALL_PATH/Apama/bin > /dev/null
-          
-          # Archive a pristine copy of the installation for the cache (before running any tests); 
-          # no need to compress as the cache already does that
-          cd $_SAG_INSTALL_PATH
-          tar -cf ~/cached-apama-installation.tar *
-          
-          echo TODO - contents of ~ are:
-          ls ~
-          echo ---
-          
-      - name: Unpack cached Apama installation
-        shell: bash
-        if: steps.cache-apama-installer.outputs.cache-hit == 'true'
-        run: |
-          if [[ ${{runner.os}} = Windows ]]; then
-            _SAG_INSTALL_PATH=c:\\SoftwareAG
+          if [[ ${{ steps.cache-apama-installer.outputs.cache-hit }} = true ]]; then
+            echo Unpacking Apama installation from cache
+            
+            mkdir $_SAG_INSTALL_PATH
+            cd $_SAG_INSTALL_PATH
+            tar -xf ~/cached-apama-installation.tar
+
+            # Check it unpacked correctly
+            ls $_SAG_INSTALL_PATH/Apama > /dev/null
           else
-            _SAG_INSTALL_PATH=/opt/softwareag
+            # Cache miss - need to install it
+            cd ../apama-installer
+            unzip -q apama-installer.zip
+            mv apama_*/* ./
+            
+            cat > apama-installer-script.txt << EOF
+            LicenseAgree=Accept
+            InstallProducts=e2ei/11/.latest/Apama/PAMServer
+            PAM.Work.Directory.ID=__VERSION1__,$_SAG_INSTALL_PATH/apama-work
+            InstallDir=$_SAG_INSTALL_PATH
+            sagInstallerLogFile=softwareag-installer.log
+            imageFile=data/SAGImage.zip
+            EOF
+            # Need to escape backslashes as it's effectively a properties file
+            sed -i 's/\\/\\\\/g' apama-installer-script.txt
+            
+            echo Running installer with script:
+            cat apama-installer-script.txt
+            
+            ./install -readScript apama-installer-script.txt -console -scriptErrorInteract no
+            
+            # Double-check that it was installed
+            ls $_SAG_INSTALL_PATH/Apama/bin > /dev/null
+            
+            # Archive a pristine copy of the installation for the cache (before running any tests); 
+            # no need to compress as the cache already does that
+            cd $_SAG_INSTALL_PATH
+            tar -cf ~/cached-apama-installation.tar *
+            
+            echo TODO - contents of ~ are:
+            ls ~
+            echo ---
           fi
-          # Make this available to later steps
-          echo "_SAG_INSTALL_PATH=$_SAG_INSTALL_PATH" >> $GITHUB_ENV
-          
-          mkdir $_SAG_INSTALL_PATH
-          cd $_SAG_INSTALL_PATH
-          tar -xf ~/cached-apama-installation.tar
 
-          ls $_SAG_INSTALL_PATH/Apama > /dev/null
-
-      - name: Setup Apama environment
-        shell: bash
-        run: |
-          echo Current dir is:
-          pwd
-          echo Contents of ~:
-          ls ~
-          #env | sort
-          echo ---
-          echo _SAG_INSTALL_PATH = $_SAG_INSTALL_PATH
-          ls $_SAG_INSTALL_PATH
-          
+          cd ~
           # Once installed, copy the entire apama environment into the GH Actions env so it can be used in any type of 
           # shell (bash/cmd/PS etc). We also set an extra env var APAMA_PYSYS so user can run pysys from any shell. 
           if [[ ${{runner.os}} = Windows ]]; then
@@ -145,6 +131,7 @@ jobs:
             env | sort >> apama.env
             echo "APAMA_PYSYS=pysys" >> $GITHUB_ENV
           fi
+          
           # Until Apama 10.7 we need to explicitly enable it
           echo PYSYS_COLOR=true >> $GITHUB_ENV
           
