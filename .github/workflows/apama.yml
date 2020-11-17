@@ -73,13 +73,17 @@ jobs:
       - name: Install Apama
         shell: bash
         run: |
-          curl https://artifactcache.actions.githubusercontent.com/dM5dnPdeeeUq4Clbj1rjWwXnOIRnJvqTymQgifzV7kc5vCj9Dx/_apis/artifactcache/cache?keys=apama-amd64_win-10.5.3.2-TODOx16&version=7b46b213d263d648c84c7691482787c1d921fb2d30c534e245a34ff31a47f82e || echo failed curl0
-          wget https://artifactcache.actions.githubusercontent.com/dM5dnPdeeeUq4Clbj1rjWwXnOIRnJvqTymQgifzV7kc5vCj9Dx/_apis/artifactcache/cache?keys=apama-amd64_win-10.5.3.2-TODOx16&version=7b46b213d263d648c84c7691482787c1d921fb2d30c534e245a34ff31a47f82e || echo failed wget0
-
+          echo curl1
+          curl https://artifactcache.actions.githubusercontent.com/dM5dnPdeeeUq4Clbj1rjWwXnOIRnJvqTymQgifzV7kc5vCj9Dx/_apis/artifactcache/cache?keys=apama-amd64_win-10.5.3.2-TODOx16&version=7b46b213d263d648c84c7691482787c1d921fb2d30c534e245a34ff31a47f82e || echo failed curl
+          echo curl2
+          curl https://artifactcache.actions.githubusercontent.com/dM5dnPdeeeUq4Clbj1rjWwXnOIRnJvqTymQgifzV7kc5vCj9Dx/_apis/artifactcache/cache?keys=apama-amd64_win-10.5.3.2-TODOx16 || echo failed curl
+          echo curl3
           curl https://artifactcache.actions.githubusercontent.com/dM5dnPdeeeUq4Clbj1rjWwXnOIRnJvqTymQgifzV7kc5vCj9Dx/_apis/artifactcache/caches/101 || echo failed curl
-          wget https://artifactcache.actions.githubusercontent.com/dM5dnPdeeeUq4Clbj1rjWwXnOIRnJvqTymQgifzV7kc5vCj9Dx/_apis/artifactcache/caches/101 || echo failed wget
-          curl https://artifactcache.actions.githubusercontent.com/dM5dnPdeeeUq4Clbj1rjWwXnOIRnJvqTymQgifzV7kc5vCj9Dx/_apis/artifactcache/caches || echo failed curl2
-          
+          echo curl4
+          curl https://artifactcache.actions.githubusercontent.com/dM5dnPdeeeUq4Clbj1rjWwXnOIRnJvqTymQgifzV7kc5vCj9Dx/_apis/artifactcache/caches || echo failed curl
+          echo curl5
+          curl https://artifactcache.actions.githubusercontent.com/dM5dnPdeeeUq4Clbj1rjWwXnOIRnJvqTymQgifzV7kc5vCj9Dx/_apis/artifactcache || echo failed curl
+
 
           # TODO: remove this
           #touch `pwd`/cached-apama-installation.tar
@@ -157,7 +161,10 @@ jobs:
           cat apama.env >> $GITHUB_ENV
 
       - name: Install Windows 8.1 SDK
-        if: matrix.run-id == 'amd64_win'
+        run: choco install windows-sdk-8.1
+
+      - name: Install Windows 8.1 SDK with Powershell
+        if: matrix.run-id == 'amd64_winx'
         shell: powershell
         run: |
           Invoke-WebRequest -Method Get -Uri https://go.microsoft.com/fwlink/p/?LinkId=323507 -OutFile sdksetup.exe -UseBasicParsing
