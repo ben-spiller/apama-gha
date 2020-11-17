@@ -42,14 +42,18 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Apama installation cache
+        
         # This fork of actions/cache allows cache to be saved even if some later steps (e.g. testing) fail
-        uses: pat-s/always-upload-cache@v2.0.0
+        #uses: pat-s/always-upload-cache@v2.1.3
+        
+        uses: actions/cache@v2.1.3
+
         id: cache-apama-installer
         with:
             # Would prefer to put this in ~/ but doesn't work on Windows currently due to https://github.com/actions/cache/issues/456
             path: ${{ github.workspace }}/cached-apama-installation
             # To use a clean cache, add extra chars to this key
-            key: apama-${{ matrix.run-id }}-${{ env.WORKFLOW_APAMA_VERSION }}-TODOx18
+            key: apama-${{ matrix.run-id }}-${{ env.WORKFLOW_APAMA_VERSION }}-TODOx20
 
       #- name: OTHER cache
       #  # This fork of actions/cache allows cache to be saved even if some later steps (e.g. testing) fail
