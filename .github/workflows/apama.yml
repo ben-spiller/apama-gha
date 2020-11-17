@@ -161,10 +161,7 @@ jobs:
           cat apama.env >> $GITHUB_ENV
 
       - name: Install Windows 8.1 SDK
-        run: choco install windows-sdk-8.1
-
-      - name: Install Windows 8.1 SDK with Powershell
-        if: matrix.run-id == 'amd64_winx'
+        if: matrix.run-id == 'amd64_win'
         shell: powershell
         run: |
           Invoke-WebRequest -Method Get -Uri https://go.microsoft.com/fwlink/p/?LinkId=323507 -OutFile sdksetup.exe -UseBasicParsing
@@ -174,7 +171,7 @@ jobs:
         if: matrix.run-id == 'amd64_win'
         uses: microsoft/setup-msbuild@v1.0.2
         with:
-          vs-version: '[14,20)'
+          vs-version: '[14,17]'
 
       - name: Build C++ plugins (Windows)
         shell: cmd
@@ -249,7 +246,7 @@ jobs:
      
       - name: Upload ApamaDoc to gh-pages
         if: matrix.upload-docs
-        #if: github.event_name == 'release'
+        #&& github.event_name == 'release'
         uses: JamesIves/github-pages-deploy-action@3.6.2
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
