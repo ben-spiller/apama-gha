@@ -157,15 +157,8 @@ jobs:
         shell: cmd
         if: matrix.run-id == 'amd64_win'
         run: |
-          echo on
-          set foo=bar
-          echo got: %foo% in %cd% want to change to %APAMA_HOME%\samples\correlator_plugin\cpp
-          cd %APAMA_HOME%\samples\correlator_plugin\cpp
           pushd %APAMA_HOME%\samples\correlator_plugin\cpp
-          cd
-          echo got: %foo% in %cd%
-          dir
-          msbuild vsproj\primitives_plugin.vcxproj /verbosity:diag
+          msbuild /p:platform=x64 correlator_plugin_cpp_api.sln
 
           dir Release\*
           mkdir %GITHUB_WORKSPACE%\src\lib
