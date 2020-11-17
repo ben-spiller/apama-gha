@@ -26,9 +26,9 @@ jobs:
       
       matrix:
         include:
-          #- run-id: amd64_linux
-          #  os: ubuntu-latest
-          #  upload-docs: true
+          - run-id: amd64_linux
+            os: ubuntu-latest
+            upload-docs: true
             
           - run-id: amd64_win
             os: windows-latest
@@ -85,10 +85,7 @@ jobs:
           curl https://artifactcache.actions.githubusercontent.com/dM5dnPdeeeUq4Clbj1rjWwXnOIRnJvqTymQgifzV7kc5vCj9Dx/_apis/artifactcache || echo failed curl
 
 
-          # TODO: remove this
-          #touch `pwd`/cached-apama-installation.tar
           mkdir cached-apama-installation
-        
           APAMA_CACHE_TAR=`pwd`/cached-apama-installation/cached-apama-installation-tar
           echo Cache location: $APAMA_CACHE_TAR
 
@@ -136,10 +133,6 @@ jobs:
             # no need to compress as the cache already does that
             cd $_SAG_INSTALL_PATH
             tar -cf $APAMA_CACHE_TAR *
-            
-            echo TODO - contents of ~ are:
-            ls ~
-            echo ---
           fi
 
           cd ~
