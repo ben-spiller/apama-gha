@@ -49,7 +49,7 @@ jobs:
             # Would prefer to put this in ~/ but doesn't work on Windows currently due to https://github.com/actions/cache/issues/456
             path: ${{ github.workspace }}/cached-apama-installation.tar
             # To use a clean cache, add extra chars to this key
-            key: apama-${{ matrix.run-id }}-${{ env.WORKFLOW_APAMA_VERSION }}-TODOx14
+            key: apama-${{ matrix.run-id }}-${{ env.WORKFLOW_APAMA_VERSION }}-TODOx15
 
       - name: OTHER cache
         # This fork of actions/cache allows cache to be saved even if some later steps (e.g. testing) fail
@@ -157,9 +157,12 @@ jobs:
         shell: cmd
         if: matrix.run-id == 'amd64_win'
         run: |
+          echo on
           set foo=bar
-          echo got: %foo% in %cd%
+          echo got: %foo% in %cd% want to change to %APAMA_HOME%\samples\correlator_plugin\cpp
           cd %APAMA_HOME%\samples\correlator_plugin\cpp
+          pushd %APAMA_HOME%\samples\correlator_plugin\cpp
+          cd
           echo got: %foo% in %cd%
           dir
           msbuild vsproj\primitives_plugin.vcxproj /verbosity:diag
