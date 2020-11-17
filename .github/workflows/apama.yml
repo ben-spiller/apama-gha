@@ -47,9 +47,9 @@ jobs:
         id: cache-apama-installer
         with:
             # Would prefer to put this in ~/ but doesn't work on Windows currently due to https://github.com/actions/cache/issues/456
-            path: ${{ github.workspace }}/cached-apama-installation.tar
+            path: ${{ github.workspace }}/cached-apama-installation
             # To use a clean cache, add extra chars to this key
-            key: apama-${{ matrix.run-id }}-${{ env.WORKFLOW_APAMA_VERSION }}-TODOx15
+            key: apama-${{ matrix.run-id }}-${{ env.WORKFLOW_APAMA_VERSION }}-TODOx16
 
       - name: OTHER cache
         # This fork of actions/cache allows cache to be saved even if some later steps (e.g. testing) fail
@@ -59,7 +59,7 @@ jobs:
             # Would prefer to put this in ~/ but doesn't work on Windows currently due to https://github.com/actions/cache/issues/456
             path: ${{ github.workspace }}/cached-apama-installation.foo
             # To use a clean cache, add extra chars to this key
-            key: apama-${{ matrix.run-id }}-${{ env.WORKFLOW_APAMA_VERSION }}-TODOy14
+            key: apama-${{ matrix.run-id }}-${{ env.WORKFLOW_APAMA_VERSION }}-TODOy16
 
       - name: Download Apama
         uses: carlosperate/download-file-action@v1.0.3
@@ -74,9 +74,10 @@ jobs:
         shell: bash
         run: |
           # TODO: remove this
-          touch `pwd`/cached-apama-installation.tar
+          #touch `pwd`/cached-apama-installation.tar
+          mkdir cached-apama-installation
         
-          APAMA_CACHE_TAR=`pwd`/cached-apama-installation.tar
+          APAMA_CACHE_TAR=`pwd`/cached-apama-installation/cached-apama-installation-tar
           echo Cache location: $APAMA_CACHE_TAR
 
           if [[ ${{runner.os}} = Windows ]]; then
@@ -151,8 +152,11 @@ jobs:
         if: matrix.run-id == 'amd64_win'
         shell: powershell
         run: |
+          Get-Date
           Invoke-WebRequest -Method Get -Uri https://go.microsoft.com/fwlink/p/?LinkId=323507 -OutFile sdksetup.exe -UseBasicParsing
+          Get-Date
           Start-Process -Wait sdksetup.exe -ArgumentList "/q", "/norestart", "/features", "OptionId.WindowsDesktopSoftwareDevelopmentKit", "OptionId.NetFxSoftwareDevelopmentKit"
+          Get-Date
       - name: Setup Visual Studio
         if: matrix.run-id == 'amd64_win'
         uses: microsoft/setup-msbuild@v1.0.2
@@ -168,7 +172,9 @@ jobs:
 
           dir Release\*
           mkdir %GITHUB_WORKSPACE%\src\lib
-          copy Release\*.dll Release\*.pdb %GITHUB_WORKSPACE%\src\lib\
+          echo Copying in:
+          copy Release\*.dll %GITHUB_WORKSPACE%\src\lib
+          copy Release\*.pdb %GITHUB_WORKSPACE%\src\lib
       - name: Build C++ plugins (Linux)
         shell: bash
         if: matrix.run-id != 'amd64_win'
