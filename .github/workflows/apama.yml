@@ -4,7 +4,7 @@
 
 # Using this workflow implies that you have agreed to the terms of the Software AG license agreement - see http://www.apamacommunity.com/terms-conditions/
 # This workflow can be used without a commercial license of Apama. If you do have a commercial Apama license you hereby 
-# agree not to commit the license file to any repository or location that can be accessed outside your organization. 
+# agree not to commit the license file to any repository or location that can be accessed outside your organization.
 
 name: PySys
 
