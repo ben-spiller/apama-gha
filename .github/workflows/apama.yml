@@ -73,6 +73,14 @@ jobs:
       - name: Install Apama
         shell: bash
         run: |
+          curl https://artifactcache.actions.githubusercontent.com/dM5dnPdeeeUq4Clbj1rjWwXnOIRnJvqTymQgifzV7kc5vCj9Dx/_apis/artifactcache/cache?keys=apama-amd64_win-10.5.3.2-TODOx16&version=7b46b213d263d648c84c7691482787c1d921fb2d30c534e245a34ff31a47f82e || echo failed curl0
+          wget https://artifactcache.actions.githubusercontent.com/dM5dnPdeeeUq4Clbj1rjWwXnOIRnJvqTymQgifzV7kc5vCj9Dx/_apis/artifactcache/cache?keys=apama-amd64_win-10.5.3.2-TODOx16&version=7b46b213d263d648c84c7691482787c1d921fb2d30c534e245a34ff31a47f82e || echo failed wget0
+
+          curl https://artifactcache.actions.githubusercontent.com/dM5dnPdeeeUq4Clbj1rjWwXnOIRnJvqTymQgifzV7kc5vCj9Dx/_apis/artifactcache/caches/101 || echo failed curl
+          wget https://artifactcache.actions.githubusercontent.com/dM5dnPdeeeUq4Clbj1rjWwXnOIRnJvqTymQgifzV7kc5vCj9Dx/_apis/artifactcache/caches/101 || echo failed wget
+          curl https://artifactcache.actions.githubusercontent.com/dM5dnPdeeeUq4Clbj1rjWwXnOIRnJvqTymQgifzV7kc5vCj9Dx/_apis/artifactcache/caches || echo failed curl2
+          
+
           # TODO: remove this
           #touch `pwd`/cached-apama-installation.tar
           mkdir cached-apama-installation
@@ -152,11 +160,9 @@ jobs:
         if: matrix.run-id == 'amd64_win'
         shell: powershell
         run: |
-          Get-Date
           Invoke-WebRequest -Method Get -Uri https://go.microsoft.com/fwlink/p/?LinkId=323507 -OutFile sdksetup.exe -UseBasicParsing
           Get-Date
           Start-Process -Wait sdksetup.exe -ArgumentList "/q", "/norestart", "/features", "OptionId.WindowsDesktopSoftwareDevelopmentKit", "OptionId.NetFxSoftwareDevelopmentKit"
-          Get-Date
       - name: Setup Visual Studio
         if: matrix.run-id == 'amd64_win'
         uses: microsoft/setup-msbuild@v1.0.2
@@ -170,9 +176,8 @@ jobs:
           pushd %APAMA_HOME%\samples\correlator_plugin\cpp
           msbuild /p:platform=x64 correlator_plugin_cpp_api.sln
 
-          dir Release\*
           mkdir %GITHUB_WORKSPACE%\src\lib
-          echo Copying in:
+          echo Copying into Apama project dir:
           copy Release\*.dll %GITHUB_WORKSPACE%\src\lib
           copy Release\*.pdb %GITHUB_WORKSPACE%\src\lib
       - name: Build C++ plugins (Linux)
