@@ -53,7 +53,7 @@ jobs:
             # Would prefer to put this in ~/ but doesn't work on Windows currently due to https://github.com/actions/cache/issues/456
             path: ${{ github.workspace }}/cached-apama-installation
             # To use a clean cache, add extra chars to this key
-            key: apama-${{ matrix.run-id }}-${{ env.WORKFLOW_APAMA_VERSION }}-TODOx21
+            key: apama-${{ matrix.run-id }}-${{ env.WORKFLOW_APAMA_VERSION }}-TODOx22
 
       #- name: OTHER cache
       #  # This fork of actions/cache allows cache to be saved even if some later steps (e.g. testing) fail
@@ -140,6 +140,12 @@ jobs:
           fi
 
           cd ~
+
+          echo PATH=$PATH
+          echo tar is:
+          which tar
+          tar --version
+
           # Once installed, copy the entire apama environment into the GH Actions env so it can be used in any type of 
           # shell (bash/cmd/PS etc). We also set an extra env var APAMA_PYSYS so user can run pysys from any shell. 
           if [[ ${{runner.os}} = Windows ]]; then
@@ -155,7 +161,17 @@ jobs:
           echo PYSYS_COLOR=true >> $GITHUB_ENV
           echo PYSYS_DISABLE_COLORAMA=true >> $GITHUB_ENV
           
+          # This will replace the environment to point at Apama rather than GH Actions pre-installed tools, which ensures
+          # the right version of Ant/Java etc is used
           cat apama.env >> $GITHUB_ENV
+
+          # However we need to special-case the location of tar since it's used by the cache (https://github.com/actions/cache/issues/465)
+          if [[ ${{runner.os}} = Windows ]]; then
+            NEWPATH=`dirname \`which tar.exe\``;`grep ^PATH=.* apama.env | sed s/.*=//g`
+            echo setting path to: $NEWPATH
+            echo PATH=$NEWPATH >> $GITHUB_ENV
+          fi
+
 
       - name: Install Windows 8.1 SDK
         if: matrix.run-id == 'amd64_win DISABLED'
