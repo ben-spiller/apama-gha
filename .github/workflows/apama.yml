@@ -149,7 +149,8 @@ jobs:
           if [[ ${{runner.os}} = Windows ]]; then
             echo "APAMA_PYSYS=pysys.cmd" >> $GITHUB_ENV
 
-            echo "APAMA_HOME=`cygpath --windows $_SAG_INSTALL_PATH/Apama"
+            echo "APAMA_HOME=`cygpath --windows $_SAG_INSTALL_PATH/Apama`"
+            echo APAMA_HOME=$APAMA_HOME
             # For Windows we need to do it all in a cmd otherwise extra vars from Git Bash will leak in
           else
             echo "APAMA_PYSYS=pysys" >> $GITHUB_ENV
@@ -165,17 +166,6 @@ jobs:
           # Until Apama 10.7 we need to explicitly enable it (and disable colorama on windows which would replace the escape codes)
           echo PYSYS_COLOR=true >> $GITHUB_ENV
           echo PYSYS_DISABLE_COLORAMA=true >> $GITHUB_ENV
-          
-
-          # However we need to special-case the location of tar since it's used by the cache (https://github.com/actions/cache/issues/465)
-          if [[ ${{runner.os}} = Windows ]]; then
-            NEWPATH=`dirname \`which tar.exe\``;`grep ^PATH=.* apama.env | sed s/.*=//g`
-            echo setting path to: $NEWPATH
-            echo PATH=$NEWPATH >> $GITHUB_ENV
-          fi
-
-                      cmd.exe /c "$_SAG_INSTALL_PATH/Apama/bin/apama_env.bat && set > apama.env"
-            echo "APAMA_PYSYS=pysys.cmd" >> $GITHUB_ENV
 
       - name: Setup Apama environment on Windows
         if: matrix.run-id == 'amd64_win'
