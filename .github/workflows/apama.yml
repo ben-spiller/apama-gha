@@ -133,17 +133,6 @@ jobs:
           echo PYSYS_COLOR=true >> $GITHUB_ENV
           echo PYSYS_DISABLE_COLORAMA=true >> $GITHUB_ENV
           
-          # This will replace the environment to point at Apama rather than GH Actions pre-installed tools, which ensures
-          # the right version of Ant/Java etc is used
-          cat apama.env >> $GITHUB_ENV
-
-          # However we need to special-case the location of tar since it's used by the cache (https://github.com/actions/cache/issues/465)
-          if [[ ${{runner.os}} = Windows ]]; then
-            NEWPATH=`dirname \`which tar.exe\``;`grep ^PATH=.* apama.env | sed s/.*=//g`
-            echo setting path to: $NEWPATH
-            echo PATH=$NEWPATH >> $GITHUB_ENV
-          fi
-
           # Once installed, copy the entire apama environment into the GH Actions env so it can be used in any type of 
           # shell (bash/cmd/PS etc). We also set an extra env var APAMA_PYSYS so user can run pysys from any shell. 
           if [[ ${{runner.os}} = Windows ]]; then
@@ -151,7 +140,7 @@ jobs:
 
             echo "APAMA_HOME=`cygpath --windows $_SAG_INSTALL_PATH/Apama`"
             echo APAMA_HOME=$APAMA_HOME
-            # For Windows we need to do it all in a cmd otherwise extra vars from Git Bash will leak in
+            # For Windows we need to do it all in a separate (cmd) step otherwise extra vars from Git Bash will leak in
           else
             echo "APAMA_PYSYS=pysys" >> $GITHUB_ENV
 
@@ -162,10 +151,6 @@ jobs:
             # the right version of Ant/Java etc is used
             cat apama.env >> $GITHUB_ENV
           fi
-
-          # Until Apama 10.7 we need to explicitly enable it (and disable colorama on windows which would replace the escape codes)
-          echo PYSYS_COLOR=true >> $GITHUB_ENV
-          echo PYSYS_DISABLE_COLORAMA=true >> $GITHUB_ENV
 
       - name: Setup Apama environment on Windows
         if: matrix.run-id == 'amd64_win'
