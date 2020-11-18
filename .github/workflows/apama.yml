@@ -160,9 +160,13 @@ jobs:
           tar --version
           %APAMA_HOME%\bin\apama_env.bat
           which tar
-
+          
           set > apama.env
           type apama.env >> %GITHUB_ENV%
+          
+          echo env:
+          type apama.env
+          echo end of end
 
       - name: Install Windows 8.1 SDK
         if: matrix.run-id == 'amd64_win DISABLED'
@@ -202,6 +206,7 @@ jobs:
       - name: Build Java plugins
         shell: bash
         run: |
+          env
           cd $APAMA_HOME/samples/correlator_plugin/java
           ant
           mkdir --parents $GITHUB_WORKSPACE/src/lib
