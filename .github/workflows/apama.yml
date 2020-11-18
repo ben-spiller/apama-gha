@@ -138,8 +138,7 @@ jobs:
           if [[ ${{runner.os}} = Windows ]]; then
             echo "APAMA_PYSYS=pysys.cmd" >> $GITHUB_ENV
 
-            echo "APAMA_HOME=`cygpath --windows $_SAG_INSTALL_PATH/Apama`"
-            echo APAMA_HOME=$APAMA_HOME
+            echo "APAMA_HOME=`cygpath --windows $_SAG_INSTALL_PATH/Apama`" >> $GITHUB_ENV
             # For Windows we need to do it all in a separate (cmd) step otherwise extra vars from Git Bash will leak in
           else
             echo "APAMA_PYSYS=pysys" >> $GITHUB_ENV
@@ -156,6 +155,7 @@ jobs:
         if: matrix.run-id == 'amd64_win'
         shell: cmd
         run: |
+          PATH
           which tar
           tar --version
           %APAMA_HOME%\bin\apama_env.bat
