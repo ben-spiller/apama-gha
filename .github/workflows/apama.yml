@@ -158,9 +158,10 @@ jobs:
           PATH
           which tar
           tar --version
-          %APAMA_HOME%\bin\apama_env.bat
+          call %APAMA_HOME%\bin\apama_env.bat
           which tar
           
+          echo writing to %GITHUB_ENV%
           set > apama.env
           type apama.env >> %GITHUB_ENV%
           
